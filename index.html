@@ -3,27 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHIN-UI-SON - 맞춤형 분석 (교체 시각화)</title>
+    <title>SHIN-UI-SON - 맞춤형 분석 (교체 후 남은 2개 활용)</title>
     <style>
+        /* ... 동일한 스타일 (생략) ... */
         :root { --gold: #ffd700; --bg: #0b0b0b; --card: #1a1a1a; --accent: #00ffcc; --save: #ff00ff; --danger: #ff4444; }
         body { background-color: var(--bg); color: var(--gold); font-family: 'Malgun Gothic', sans-serif; padding: 8px; margin: 0; }
         .outer-border { border: 2px solid var(--gold); border-radius: 20px; padding: 12px; max-width: 480px; margin: 0 auto; }
         .header-box { text-align: center; margin-bottom: 8px; }
-        
         .prev-win-label { font-size: 10px; color: #aaa; margin-bottom: 2px; }
         .next-episode { font-size: 15px; font-weight: 900; color: #fff; text-shadow: 0 0 8px rgba(255,215,0,0.5); margin-bottom: 2px; }
         .round-text { font-size: 17px; font-weight: 900; color: #ffd700; text-shadow: 0 0 12px #ffd700; margin: 0 0 2px 0; }
-        
         .base-info { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; margin: 5px 0; }
         .base-num-box { width: 24px; height: 24px; line-height: 24px; text-align: center; font-size: 10px; font-weight: 900; border-radius: 50%; background: #000000; color: var(--gold); border: 1px solid var(--gold); display: inline-block; }
         .bonus-label { color: #888; font-size: 8px; margin: 0 2px; }
-        
         .status-info { font-size: 10px; color: var(--accent); line-height: 1.3; min-height: 100px; width: 100%; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 6px; box-sizing: border-box; margin-top: 5px; text-align: left; border: 1px solid #333; overflow-y: auto; }
         .highlight-gold { color: var(--gold); font-weight: bold; }
         .highlight-blue { color: #00ccff; font-weight: bold; }
         .replaced-in { color: #ff6666 !important; font-weight: bold; }
         .replaced-out { color: #66aaff !important; font-weight: bold; }
-        
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 3px 0; }
         button { border-radius: 8px; font-weight: bold; cursor: pointer; border: none; height: 40px; transition: 0.2s; font-size: 14px; }
         button:active { transform: scale(0.95); opacity: 0.8; }
@@ -32,38 +29,30 @@
         .btn-sub { background: #222; color: #fff; border: 1px solid #444; }
         .btn-reset { grid-column: span 2; background: #333; color: #aaa; height: 34px; margin-top: 3px; font-size: 13px; }
         .btn-review { grid-column: span 2; background: #ff00ff; color: white; height: 38px; margin-top: 3px; }
-        
         .round-selector { margin: 3px 0 0 0; text-align: center; border-top: 1px solid #333; padding-top: 5px; }
         .round-selector label { display: block; font-size: 12px; color: var(--accent); margin-bottom: 3px; font-weight: bold; }
         .base-round-input { display: flex; justify-content: center; align-items: center; gap: 5px; }
         .base-round-input input { width: 70px; height: 34px; text-align: center; background: #222; border: 2px solid var(--gold); color: #fff; border-radius: 8px; font-size: 14px; font-weight: bold; }
         .base-round-input button { background: var(--accent); color: #000; border: none; border-radius: 8px; padding: 0 10px; height: 34px; font-weight: bold; font-size: 13px; cursor: pointer; box-shadow: 0 0 6px rgba(0,255,204,0.3); }
         .round-desc { font-size: 9px; color: #888; margin-top: 2px; }
-        
         .row-line { background: var(--card); border-radius: 10px; padding: 8px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #333; cursor: pointer; transition: 0.2s; }
         .row-line:hover { border-color: var(--accent); }
         .num-container { display: flex; gap: 4px; flex-grow: 1; justify-content: center; }
-        
         .num-box { width: 28px; height: 28px; line-height: 28px; text-align: center; font-size: 11px; font-weight: 900; border-radius: 50%; background: #000000 !important; color: var(--gold) !important; border: 1px solid var(--gold) !important; }
         .num-box.eliminated { border-color: #ff8888 !important; color: #ff8888 !important; }
         .num-box.replaced-in { border-color: #ff6666 !important; color: #ff6666 !important; background: #330000 !important; }
         .num-box.replaced-out { border-color: #66aaff !important; color: #66aaff !important; background: #001a33 !important; }
-        
         .combo-label { font-size: 13px; font-weight: bold; color: var(--accent); margin-right: 6px; min-width: 40px; }
         .save-btn { font-size: 10px; background: var(--save); color: white; padding: 4px 6px; border-radius: 5px; cursor: pointer; margin-left: 6px; }
         .badge { font-size: 9px; background: #333; padding: 2px 4px; border-radius: 8px; margin-left: 4px; color: #aaa; }
-        
         .popup-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .popup-content { background: var(--card); border: 2px solid var(--gold); border-radius: 18px; padding: 15px; max-width: 420px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; }
         .popup-close { position: absolute; top: 8px; right: 12px; font-size: 24px; background: transparent; border: none; color: var(--gold); cursor: pointer; z-index: 1100; padding: 5px 10px; }
         .popup-title { font-size: 17px; font-weight: bold; margin-bottom: 12px; text-align: center; color: var(--gold); }
-        
         .user-info { background: #333; color: var(--accent); padding: 2px 6px; border-radius: 16px; font-size: 10px; margin-bottom: 5px; text-align: center; display: inline-block; }
         .change-name-btn { background: #00ccff; color: white; border: none; border-radius: 4px; padding: 2px 5px; font-size: 9px; margin-left: 4px; cursor: pointer; }
-        
         .small-note { margin-top: 2px; color: #888; font-size: 8px; text-align: center; }
         *:focus, *:active { outline: none; -webkit-tap-highlight-color: transparent; }
-        
         .game-tabs { display: flex; gap: 4px; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 4px; }
         .game-tab { flex: 1; background: #222; color: #aaa; border: 1px solid #444; border-radius: 5px; padding: 5px 0; font-size: 12px; cursor: pointer; }
         .game-tab.active { background: var(--accent); color: #000; font-weight: bold; border-color: var(--accent); }
@@ -77,29 +66,24 @@
         .game-btn:disabled { opacity: 0.5; background: #444; color: #aaa; cursor: not-allowed; transform: none; }
         .reaction-box { width: 100%; height: 130px; background: #222; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px; cursor: pointer; margin: 8px 0; }
         .reaction-result { margin-top: 6px; font-size: 13px; color: var(--gold); text-align: center; }
-        
         .winning-input { display: flex; gap: 4px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
         .winning-input input { width: 36px; height: 36px; text-align: center; background: #222; border: 1px solid #444; color: #fff; border-radius: 5px; font-size: 13px; }
         .result-box { background: #222; border: 1px solid #444; border-radius: 8px; padding: 8px; margin: 8px 0; font-size: 12px; }
         .match-count { font-size: 15px; color: var(--gold); }
         .combo-item { display: flex; justify-content: space-between; padding: 4px; border-bottom: 1px solid #333; font-size: 11px; }
         .winning-display { font-size: 12px; color: #ffd700; margin-bottom: 8px; text-align: center; }
-        
         .section-row { display: flex; align-items: center; margin: 4px 0; padding: 4px; background: #1a1a1a; border-radius: 5px; }
         .section-label { width: 45px; color: var(--accent); font-size: 11px; }
         .section-nums { display: flex; gap: 3px; flex-wrap: wrap; }
-        
         .combo-list { max-height: 350px; overflow-y: auto; }
         .combo-item-row { display: flex; justify-content: space-between; align-items: center; padding: 5px; border-bottom: 1px solid #333; }
         .combo-item-row:last-child { border-bottom: none; }
         .combo-nums { display: flex; gap: 3px; }
         .combo-save-btn { background: var(--save); color: white; border: none; border-radius: 4px; padding: 3px 6px; font-size: 9px; cursor: pointer; }
         .combo-save-btn:active { transform: scale(0.95); opacity: 0.8; }
-
         .ai-info-box { background: #1a1a1a; border-radius: 6px; padding: 6px; margin: 8px 0; font-size: 11px; border: 1px solid #444; }
         .ai-info-box div { margin: 2px 0; }
         .matched { color: #00ff00 !important; font-weight: bold; }
-        
         .control-panel { margin: 5px 0; border-top: 1px solid #333; padding-top: 5px; }
         .slider-container { display: flex; align-items: center; gap: 8px; justify-content: center; }
         .slider-container input[type=range] { flex: 3; height: 6px; background: var(--accent); border-radius: 3px; -webkit-appearance: none; }
@@ -116,7 +100,7 @@
     <div class="header-box">
         <div class="prev-win-label" id="prevWinLabel">📌 기준 이전회차 당첨번호</div>
         <div class="base-info" id="baseRoundInfo"></div>
-        <div class="next-episode">SHIN-UI-SON + 맞춤형 분석 (교체 시각화)</div>
+        <div class="next-episode">SHIN-UI-SON + 맞춤형 분석 (남은 2개 활용)</div>
         <div class="round-text" id="roundDisplay">예상 회차</div>
         <div id="userDisplay" class="user-info"></div>
         <div id="status" class="status-info">엔진 초기화 중...</div>
@@ -185,7 +169,7 @@
     </div>
 
     <div id="console"></div>
-    <div class="small-note">※ 10조합: 홀수조합(1,3,5,7,9) 14수, 짝수조합(2,4,6,8,10) 압축수 | 5조합: 압축수 가중치 랜덤 | 🎯 <span id="targetRound">1213</span>회차 예상</div>
+    <div class="small-note">※ 10조합: 홀수조합(1,3,5,7,9) 14수, 짝수조합(2,4,6,8,10) 압축수 + 남은 2개 포함 | 5조합: 압축수 가중치 랜덤 | 🎯 <span id="targetRound">1213</span>회차 예상</div>
 </div>
 
 <!-- 토스트 메시지 -->
@@ -221,10 +205,10 @@
     let intervalWeeks = 51;
     let referenceCount = 4;
 
-    // 교체 관련 전역 변수 (시각화용)
-    let replacedIn = [];      // 교체된 번호 (빠진4 → 10수)
-    let replacedOut = [];     // 제외된 번호 (10수 → 빠진4)
-    let middleBag = [];       // 중간 그룹 (B bag)
+    // 교체 관련 전역 변수
+    let replacedIn = [];
+    let replacedOut = [];
+    let middleBag = [];
 
     // ===== 사용자 관리 함수 =====
     function updateUserDisplay() {
@@ -372,7 +356,6 @@
         }
 
         let mainPool = [], bonusPool = [], mainWithRound = [];
-        // 가중치 배열 생성 (최신일수록 높은 값)
         const baseWeight = 1.6;
         const step = -0.1;
         const weights = [];
@@ -438,7 +421,7 @@
         let survivorsSet = new Set([...mainPool, ...bonusPool]);
         let survivors = Array.from(survivorsSet).sort((a,b)=>a-b);
 
-        // 빠진 4개
+        // 빠진 4개 (초기)
         let compressedOut = full14.filter(num => !basketSet.has(num));
 
         return {
@@ -468,15 +451,15 @@
         survivors = res.survivors;
         basket = res.basket;
         full14 = res.full14;
-        compressedOut4 = res.compressedOut;
+        let originalCompressedOut = res.compressedOut; // 교체 전
         weightedScore = res.weightedScore;
         bonusNums = res.bonusNums;
         const rankedMain = res.rankedMain;
 
-        // 교체 로직 (14수에서 빠진 4개 중 연관성 강한 2개를 10수에 교체)
-        let candidates = compressedOut4.filter(num => lastWinning.includes(num));
+        // 교체 로직
+        let candidates = originalCompressedOut.filter(num => lastWinning.includes(num));
         if (candidates.length < 2) {
-            let sortedOut = [...compressedOut4].sort((a, b) => (weightedScore[b] || 0) - (weightedScore[a] || 0));
+            let sortedOut = [...originalCompressedOut].sort((a, b) => (weightedScore[b] || 0) - (weightedScore[a] || 0));
             for (let num of sortedOut) {
                 if (!candidates.includes(num) && candidates.length < 2) {
                     candidates.push(num);
@@ -501,19 +484,25 @@
             newBasket = [...new Set(newBasket)].sort((a, b) => a - b);
             if (newBasket.length === basket.length) {
                 basket = newBasket;
-                let newBasketSet = new Set(basket);
-                compressedOut4 = full14.filter(num => !newBasketSet.has(num));
+                // 교체 후 compressedOut4는 originalCompressedOut에서 candidates 제외한 것
+                compressedOut4 = originalCompressedOut.filter(num => !candidates.includes(num));
+                // lowestTwo는 middleBag으로 이동
+                middleBag = [...middleBag, ...lowestTwo].filter((v, i, a) => a.indexOf(v) === i).sort((a,b)=>a-b);
+                replacedIn = candidates;
+                replacedOut = lowestTwo;
             }
+        } else {
+            compressedOut4 = originalCompressedOut;
+            replacedIn = [];
+            replacedOut = [];
+            middleBag = rankedMain.filter(num => !new Set(basket).has(num) && !new Set(full14).has(num)).sort((a,b)=>a-b);
         }
 
-        // 교체된 번호와 제외된 번호 저장 (시각화용)
-        replacedIn = candidates;
-        replacedOut = lowestTwo;
-
-        // middleBag 계산 (rankedMain에서 basket과 full14에 속하지 않는 수)
+        // middleBag 재계산 (rankedMain에서 basket과 full14에 속하지 않는 수 + replacedOut)
         let basketSet = new Set(basket);
         let full14Set = new Set(full14);
-        middleBag = rankedMain.filter(num => !basketSet.has(num) && !full14Set.has(num)).sort((a,b)=>a-b);
+        middleBag = rankedMain.filter(num => !basketSet.has(num) && !full14Set.has(num));
+        middleBag = [...middleBag, ...replacedOut].filter((v, i, a) => a.indexOf(v) === i).sort((a,b)=>a-b);
 
         // 합계 계산 (참고용)
         const targetRounds = [];
@@ -537,7 +526,6 @@
         document.getElementById('roundDisplay').innerHTML = `예상 ${targetRound}회차`;
         document.getElementById('targetRound').innerText = targetRound;
 
-        // 상태창에 교체 정보 및 middleBag 표시
         let replacedInHtml = replacedIn.length ? replacedIn.map(n => `<span class="replaced-in">${n}</span>`).join(', ') : '없음';
         let replacedOutHtml = replacedOut.length ? replacedOut.map(n => `<span class="replaced-out">${n}</span>`).join(', ') : '없음';
         let compressedOutHtml = compressedOut4.map(n => 
@@ -548,7 +536,7 @@
             <div><span class="highlight-gold">★ 압축수 ${currentCompress} / 간격 ${intervalWeeks}주 / ${referenceCount}개 회차</span></div>
             <div>생존자 ${survivors.length}수: ${survivors.join(', ')}</div>
             <div>AI 추천 ${basket.length}수: ${basket.join(', ')}</div>
-            <div>🔻 14수에서 빠진 ${compressedOut4.length}개: ${compressedOutHtml}</div>
+            <div>🔻 14수에서 빠진 ${compressedOut4.length}개 (교체 후 남은): ${compressedOutHtml}</div>
             <div style="margin-top:4px;">
                 <span style="color:#ff6666;">▶ 교체된 번호: ${replacedInHtml}</span><br>
                 <span style="color:#66aaff;">◀ 제외된 번호: ${replacedOutHtml}</span><br>
@@ -565,7 +553,7 @@
             reviewAIInfo.innerHTML = `
                 <div><span class="highlight-blue">생존자 ${survivors.length}수:</span> ${survivors.join(', ')}</div>
                 <div><span class="highlight-gold">AI 추천 ${basket.length}수:</span> ${basket.join(', ')}</div>
-                <div><span class="highlight-blue">🔻 14수에서 빠진 ${compressedOut4.length}개:</span> ${compressedOutHtml}</div>
+                <div><span class="highlight-blue">🔻 14수에서 빠진 ${compressedOut4.length}개 (교체 후 남은):</span> ${compressedOutHtml}</div>
                 <div><span style="color:#ff6666;">▶ 교체된 번호: ${replacedInHtml}</span></div>
                 <div><span style="color:#66aaff;">◀ 제외된 번호: ${replacedOutHtml}</span></div>
                 <div><span style="color:#aaa;">📦 B bag: ${middleBag.join(', ') || '없음'}</span></div>
@@ -586,31 +574,53 @@
 
     // ===== 조합 생성 함수 =====
     function process(limit) {
-        analyze(); // 최신 데이터 반영 (교체된 basket)
+        analyze(); // 최신 데이터 반영
         generatedCombos = [];
         let used = new Set();
 
         if (limit === 10) {
-            // 10조합: 홀수 인덱스 → full14, 짝수 인덱스 → basket (교체된)
+            // 10조합: 각 조합에 compressedOut4 중 하나를 포함시킴
             for (let i = 0; i < limit; i++) {
                 let combo = new Set();
-                let pool = (i % 2 === 0) ? full14 : basket;
-                let shuffled = [...pool].sort(() => Math.random() - 0.5);
+                let pool = (i % 2 === 0) ? full14 : basket; // 홀수/짝수 구분
+                let available = [...pool];
+
+                // compressedOut4에서 랜덤으로 하나 선택
+                let special = null;
+                if (compressedOut4.length > 0) {
+                    special = compressedOut4[Math.floor(Math.random() * compressedOut4.length)];
+                    combo.add(special);
+                    available = available.filter(n => n !== special); // 중복 방지
+                }
+
+                // 나머지 5개를 available에서 랜덤 선택
+                let shuffled = available.sort(() => Math.random() - 0.5);
                 for (let n of shuffled) {
                     if (combo.size < 6) combo.add(n);
                 }
+
+                // 혹시 모자를 경우 (available 부족) 대비
+                if (combo.size < 6) {
+                    let all = [...new Set([...pool, ...compressedOut4])];
+                    let shuffledAll = all.sort(() => Math.random() - 0.5);
+                    for (let n of shuffledAll) {
+                        combo.add(n);
+                        if (combo.size === 6) break;
+                    }
+                }
+
                 let finalArr = Array.from(combo).sort((a,b)=>a-b);
                 let key = finalArr.join(',');
                 if (!used.has(key)) {
                     used.add(key);
                     generatedCombos.push({ numbers: finalArr, key: key, comboNumber: i + 1 });
                 } else {
-                    if (i < limit) limit++;
+                    if (i < limit) limit++; // 중복 시 재시도
                     if (limit > 100) break;
                 }
             }
         } else {
-            // 5조합 및 기타: basket에서 가중치 기반 랜덤
+            // 5조합 및 기타: 기존 방식 (basket에서 가중치 기반)
             let count = 0, safety = 0;
             while (count < limit && safety < 50000) {
                 safety++;
@@ -752,7 +762,7 @@
         }
     }
 
-    // ===== 게임 함수 (완전 복원) =====
+    // ===== 게임 함수 =====
     let touchGame = null;
     let touchInterval = null;
     let touchSelected = [];
@@ -1043,7 +1053,7 @@
             reviewAIInfo.innerHTML = `
                 <div><span class="highlight-blue">생존자 ${survivors.length}수:</span> ${survivorsHtml}</div>
                 <div><span class="highlight-gold">AI 추천 ${basket.length}수:</span> ${basketHtml}</div>
-                <div><span class="highlight-blue">🔻 14수에서 빠진 ${compressedOut4.length}개:</span> ${outHtml}</div>
+                <div><span class="highlight-blue">🔻 14수에서 빠진 ${compressedOut4.length}개 (교체 후 남은):</span> ${outHtml}</div>
                 <div><span style="color:#ff6666;">▶ 교체된 번호: ${replacedInHtml}</span></div>
                 <div><span style="color:#66aaff;">◀ 제외된 번호: ${replacedOutHtml}</span></div>
                 <div><span style="color:#aaa;">📦 B bag: ${middleHtml || '없음'}</span></div>
