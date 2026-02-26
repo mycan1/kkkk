@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHIN-UI-SON - 통합 분석 시스템</title>
+    <title>SHIN-UI-SON - 통합 분석 시스템 (오류 수정)</title>
     <style>
         :root { --gold: #ffd700; --bg: #0b0b0b; --card: #1a1a1a; --accent: #00ffcc; --save: #ff00ff; --danger: #ff4444; }
         body { background-color: var(--bg); color: var(--gold); font-family: 'Malgun Gothic', sans-serif; padding: 8px; margin: 0; }
@@ -23,6 +23,7 @@
         .highlight-blue { color: #00ccff; font-weight: bold; }
         .replaced-in { color: #ff6666 !important; font-weight: bold; }
         .replaced-out { color: #66aaff !important; font-weight: bold; }
+        .matched { color: #00ff00 !important; font-weight: bold; }
         
         .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 3px 0; }
         button { border-radius: 8px; font-weight: bold; cursor: pointer; border: none; height: 40px; transition: 0.2s; font-size: 14px; }
@@ -48,6 +49,7 @@
         .num-box.eliminated { border-color: #ff8888 !important; color: #ff8888 !important; }
         .num-box.replaced-in { border-color: #ff6666 !important; color: #ff6666 !important; background: #330000 !important; }
         .num-box.replaced-out { border-color: #66aaff !important; color: #66aaff !important; background: #001a33 !important; }
+        .num-box.matched { border-color: #00ff00 !important; color: #00ff00 !important; background: #003300 !important; }
         
         .combo-label { font-size: 13px; font-weight: bold; color: var(--accent); margin-right: 6px; min-width: 40px; }
         .save-btn { font-size: 10px; background: var(--save); color: white; padding: 4px 6px; border-radius: 5px; cursor: pointer; margin-left: 6px; }
@@ -98,7 +100,6 @@
 
         .ai-info-box { background: #1a1a1a; border-radius: 6px; padding: 6px; margin: 8px 0; font-size: 11px; border: 1px solid #444; }
         .ai-info-box div { margin: 2px 0; }
-        .matched { color: #00ff00 !important; font-weight: bold; }
         
         .control-panel { margin: 5px 0; border-top: 1px solid #333; padding-top: 5px; }
         .slider-container { display: flex; align-items: center; gap: 8px; justify-content: center; }
@@ -116,7 +117,7 @@
     <div class="header-box">
         <div class="prev-win-label" id="prevWinLabel">📌 기준 이전회차 당첨번호</div>
         <div class="base-info" id="baseRoundInfo"></div>
-        <div class="next-episode">SHIN-UI-SON + 통합 분석</div>
+        <div class="next-episode">SHIN-UI-SON + 통합 분석 (오류 수정)</div>
         <div class="round-text" id="roundDisplay">예상 회차</div>
         <div id="userDisplay" class="user-info"></div>
         <div id="status" class="status-info">엔진 초기화 중...</div>
@@ -157,7 +158,7 @@
         <div class="round-desc">연속: 각 회차별 결과 | 통합: 여러 회차 합쳐 하나의 결과</div>
     </div>
 
-    <!-- 연속 분석 횟수 입력 (1~30) -->
+    <!-- 분석 범위 입력 (1~30) -->
     <div class="control-panel">
         <label>🔢 분석 범위 (1~30회)</label>
         <div class="batch-input">
@@ -202,7 +203,7 @@
     <span style="background:#333; color:#ffd700; padding:5px 10px; border-radius:18px; font-size:11px; box-shadow:0 2px 6px rgba(0,0,0,0.3); display:inline-block;">✅ 저장되었습니다</span>
 </div>
 
-<!-- 팝업들 (기존과 동일) -->
+<!-- 팝업들 -->
 <div id="popup" class="popup-overlay" style="display:none;"><div class="popup-content"><button class="popup-close" onclick="closePopup()">&times;</button><div class="popup-title">📦 보관함</div><div id="storage"></div></div></div>
 <div id="gamePopup" class="popup-overlay" style="display:none;"><div class="popup-content" style="max-width:420px;"><button class="popup-close" onclick="closeGamePopup()">&times;</button><div class="popup-title">🎮 게임센터</div><div class="game-tabs"><button class="game-tab active" data-game="touch" onclick="switchGame('touch')">터치 러쉬</button><button class="game-tab" data-game="reaction" onclick="switchGame('reaction')">반응속도</button></div><div id="touchGame" class="game-panel active"><canvas id="gameCanvas" class="game-canvas"></canvas><div class="selected-numbers" id="selectedNumbersContainer"></div><div style="font-size:8px; color:#888; text-align:center;">* 6개를 선택하면 저장 버튼이 활성화됩니다</div><div class="game-btn-group"><button class="game-btn" onclick="resetTouchGame()">리셋</button><button class="game-btn" id="saveComboBtn" onclick="saveTouchCombo()" disabled>조합 저장</button></div></div><div id="reactionGame" class="game-panel"><div style="text-align:center; margin:8px 0;"><div class="reaction-box" id="reactionBox" onclick="handleReactionClick()">시작하려면 누르세요</div><div class="reaction-result" id="reactionResult"></div><div class="selected-numbers" id="reactionSelectedContainer"></div><div style="font-size:8px; color:#888; text-align:center;">* 6개를 선택하면 저장 버튼이 활성화됩니다</div><div class="game-btn-group"><button class="game-btn" onclick="resetReactionGame()">리셋</button><button class="game-btn" id="saveReactionBtn" onclick="saveReactionCombo()" disabled>조합 저장</button><button class="game-btn" onclick="startReaction()">새 게임</button></div></div></div></div></div>
 <div id="reviewPopup" class="popup-overlay" style="display:none;"><div class="popup-content"><button class="popup-close" onclick="closeReviewPopup()">&times;</button><div class="popup-title" id="reviewTitle">📊 1213회 복기</div><div class="winning-display" id="winningDisplay"></div><div class="ai-info-box" id="reviewAIInfo"></div><div style="text-align:center; margin-bottom:8px;" id="reviewDesc">당첨번호 6개 + 보너스를 입력하세요</div><div class="winning-input"><input type="number" id="win1" min="1" max="45" step="1" placeholder="1"><input type="number" id="win2" min="1" max="45" step="1" placeholder="2"><input type="number" id="win3" min="1" max="45" step="1" placeholder="3"><input type="number" id="win4" min="1" max="45" step="1" placeholder="4"><input type="number" id="win5" min="1" max="45" step="1" placeholder="5"><input type="number" id="win6" min="1" max="45" step="1" placeholder="6"></div><div style="text-align:center; margin:5px 0;">보너스 번호</div><div class="winning-input"><input type="number" id="bonus" min="1" max="45" step="1" placeholder="보너스"></div><div style="text-align:center; margin:8px 0;"><button class="game-btn" onclick="compareNumbers()">비교하기</button></div><div id="reviewResult" class="result-box"><div>AI 추천 수와 비교:</div><div id="aiMatch" class="match-count">-</div><div id="aiMatchedList" style="font-size:12px; color:#ffd700;"></div><div id="aiBonus" style="font-size:12px; color:#aaa;"></div><div style="margin-top:6px;">보관함 조합 비교:</div><div id="savedMatch" style="max-height:140px; overflow-y:auto;"></div></div></div></div>
@@ -597,7 +598,7 @@
         analyze();
     }
 
-    // ===== 조합 생성 함수 =====
+    // ===== 조합 생성 함수 (5조합 랜덤 수정) =====
     function process(limit) {
         analyze();
         generatedCombos = [];
@@ -641,18 +642,30 @@
                 }
             }
         } else {
+            // 5조합 및 사용자 지정: 가중치 기반 랜덤 (누적 확률 방식)
             let count = 0, safety = 0;
             while (count < limit && safety < 50000) {
                 safety++;
                 let res = new Set();
+                // 가중치 목록 생성
                 let weightedItems = basket.map(n => ({ num: n, weight: weightedScore[n] || 1 }));
-                let sorted = [...weightedItems].sort((a,b) => b.weight - a.weight);
-                for (let item of sorted) {
-                    if (res.size < 6) res.add(item.num);
+                // 가중치 랜덤 선택 (비복원 추출)
+                while (res.size < 6 && weightedItems.length > 0) {
+                    let total = weightedItems.reduce((sum, item) => sum + item.weight, 0);
+                    let rand = Math.random() * total;
+                    let cum = 0;
+                    for (let i = 0; i < weightedItems.length; i++) {
+                        cum += weightedItems[i].weight;
+                        if (rand < cum) {
+                            res.add(weightedItems[i].num);
+                            weightedItems.splice(i, 1);
+                            break;
+                        }
+                    }
                 }
-                let basketArr = [...basket];
+                // 부족하면 랜덤 보충 (거의 발생 안 함)
                 while (res.size < 6) {
-                    let rand = basketArr[Math.floor(Math.random() * basketArr.length)];
+                    let rand = basket[Math.floor(Math.random() * basket.length)];
                     res.add(rand);
                 }
                 let finalArr = Array.from(res).sort((a,b)=>a-b);
@@ -769,7 +782,7 @@
         navigator.clipboard.writeText(text).then(() => alert('✅ 결과 복사됨')).catch(() => alert('❌ 복사 실패'));
     }
 
-    // ===== 통합 분석 함수 (여러 회차 통합, 팝업 결과 + 당첨번호 표시) =====
+    // ===== 통합 분석 함수 (여러 회차 통합, 팝업 결과 간소화) =====
     function runIntegratedAnalysis() {
         const startRound = currentBaseRound;
         const count = parseInt(document.getElementById('batchCount').value) || 10;
@@ -900,7 +913,7 @@
         let middleBag = rankedMain.filter(num => !new Set(basket).has(num) && !new Set(full14).has(num));
         middleBag = [...middleBag, ...replacedOut].filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>a-b);
 
-        // 10. 팝업 표시 (당첨번호 포함)
+        // 10. 팝업 표시 (간소화된 스타일) + weightedScore 추가
         showIntegratedPopup({
             range: `${startRound} ~ ${startRound - count + 1}회 통합`,
             basket,
@@ -911,6 +924,7 @@
             replacedOut,
             middleBag,
             compress: currentCompress,
+            weightedScore: wScore,   // <-- 추가
             winningNums: winningNums,
             bonusNum: bonusNum,
             targetRound: startRound
@@ -918,21 +932,34 @@
     }
 
     function showIntegratedPopup(data) {
-        let replacedInHtml = data.replacedIn.length ? data.replacedIn.map(n => `<span class="replaced-in">${n}</span>`).join(', ') : '없음';
-        let replacedOutHtml = data.replacedOut.length ? data.replacedOut.map(n => `<span class="replaced-out">${n}</span>`).join(', ') : '없음';
-        let compressedOutHtml = data.compressedOut.map(n => 
-            data.replacedIn.includes(n) ? `<span class="replaced-in">${n}</span>` : n
-        ).join(', ');
+        const winSet = new Set(data.winningNums || []);
+        if (data.bonusNum) winSet.add(data.bonusNum);
 
-        // 당첨번호 HTML 생성
+        // 숫자 표시 함수: 배경/테두리 없이 색상만 적용
+        const formatNumber = (num) => {
+            let color = '#ffd700'; // 기본 금색
+            if (winSet.has(num)) color = '#00ff00';
+            else if (data.replacedIn.includes(num)) color = '#ff6666';
+            else if (data.replacedOut.includes(num)) color = '#66aaff';
+            else if (data.survivors.includes(num) && !data.basket.includes(num)) color = '#aaa';
+            return `<span style="display:inline-block; padding:0 2px; color:${color};">${num}</span>`;
+        };
+
+        let replacedInHtml = data.replacedIn.length ? data.replacedIn.map(n => formatNumber(n)).join(' ') : '없음';
+        let replacedOutHtml = data.replacedOut.length ? data.replacedOut.map(n => formatNumber(n)).join(' ') : '없음';
+        let survivorsHtml = data.survivors.map(n => formatNumber(n)).join(' ');
+        let basketHtml = data.basket.map(n => formatNumber(n)).join(' ');
+        let compressedOutHtml = data.compressedOut.map(n => formatNumber(n)).join(' ');
+        let middleBagHtml = data.middleBag.length ? data.middleBag.map(n => formatNumber(n)).join(' ') : '없음';
+
         let winningHtml = '';
         if (data.winningNums && data.winningNums.length === 6) {
             winningHtml = `
                 <div style="text-align:center; margin:8px 0; padding:4px; background:#222; border-radius:6px;">
                     <span class="highlight-gold">📌 ${data.targetRound}회 당첨번호:</span> 
-                    ${data.winningNums.map(n => `<span class="base-num-box" style="margin:0 2px;">${n}</span>`).join('')}
+                    ${data.winningNums.map(n => `<span style="display:inline-block; padding:0 2px; color:#ffd700;">${n}</span>`).join('')}
                     <span class="bonus-label">보너스</span>
-                    <span class="base-num-box">${data.bonusNum}</span>
+                    <span style="display:inline-block; padding:0 2px; color:#ffd700;">${data.bonusNum}</span>
                 </div>
             `;
         }
@@ -942,16 +969,17 @@
                 <div style="text-align:center; margin-bottom:8px; color:var(--accent); font-weight:bold;">📊 ${data.range}</div>
                 ${winningHtml}
                 <div><span class="highlight-gold">★ 압축수 ${data.compress}</span></div>
-                <div>생존자 ${data.survivors.length}수: ${data.survivors.join(', ')}</div>
-                <div>AI 추천 ${data.basket.length}수: ${data.basket.join(', ')}</div>
+                <div>생존자 ${data.survivors.length}수: ${survivorsHtml}</div>
+                <div>AI 추천 ${data.basket.length}수: ${basketHtml}</div>
                 <div>🔻 14수에서 빠진 ${data.compressedOut.length}개 (교체 후 남은): ${compressedOutHtml}</div>
                 <div style="margin-top:4px;">
                     <span style="color:#ff6666;">▶ 교체된 번호: ${replacedInHtml}</span><br>
                     <span style="color:#66aaff;">◀ 교체당한 번호: ${replacedOutHtml}</span><br>
-                    <span style="color:#aaa;">📦 B bag: ${data.middleBag.join(', ') || '없음'}</span>
+                    <span style="color:#aaa;">📦 B bag: ${middleBagHtml}</span>
                 </div>
             </div>
-            <div style="text-align:center; margin-top:12px;">
+            <div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">
+                <button class="game-btn" onclick="applyIntegratedResult(${JSON.stringify(data).replace(/"/g, '&quot;')})">✅ 이 결과 적용</button>
                 <button class="game-btn" onclick="this.closest('.popup-overlay').remove()">닫기</button>
             </div>
         `;
@@ -961,6 +989,65 @@
         popup.innerHTML = `<div class="popup-content" style="max-width:450px;">${html}</div>`;
         document.body.appendChild(popup);
         popup.addEventListener('click', e => { if (e.target === popup) popup.remove(); });
+    }
+
+    // 통합 결과를 현재 분석 상태에 적용 (weightedScore 포함)
+    function applyIntegratedResult(data) {
+        basket = data.basket;
+        survivors = data.survivors;
+        compressedOut4 = data.compressedOut;
+        full14 = data.full14;
+        replacedIn = data.replacedIn;
+        replacedOut = data.replacedOut;
+        middle = data.middleBag;
+        weightedScore = data.weightedScore;  // <-- 중요! 가중치 업데이트
+
+        const targetRound = currentBaseRound;
+        const prevRound = targetRound - 1;
+        const prevData = FULL_DATA.find(row => row[0] === prevRound);
+        if (prevData) {
+            const baseNums = prevData.slice(1, 7);
+            const bonus = prevData[7];
+            let ballHtml = baseNums.map(n => `<span class="base-num-box">${n}</span>`).join('');
+            ballHtml += `<span class="bonus-label">보너스</span>`;
+            ballHtml += `<span class="base-num-box">${bonus}</span>`;
+            document.getElementById('baseRoundInfo').innerHTML = ballHtml;
+        }
+
+        let replacedInHtml = replacedIn.length ? replacedIn.map(n => `<span class="replaced-in">${n}</span>`).join(', ') : '없음';
+        let replacedOutHtml = replacedOut.length ? replacedOut.map(n => `<span class="replaced-out">${n}</span>`).join(', ') : '없음';
+        let compressedOutHtml = compressedOut4.map(n => 
+            replacedIn.includes(n) ? `<span class="replaced-in">${n}</span>` : n
+        ).join(', ');
+
+        document.getElementById('status').innerHTML = `
+            <div><span class="highlight-gold">★ [통합 적용] 압축수 ${currentCompress}</span></div>
+            <div>생존자 ${survivors.length}수: ${survivors.join(', ')}</div>
+            <div>AI 추천 ${basket.length}수: ${basket.join(', ')}</div>
+            <div>🔻 14수에서 빠진 ${compressedOut4.length}개 (교체 후 남은): ${compressedOutHtml}</div>
+            <div style="margin-top:4px;">
+                <span style="color:#ff6666;">▶ 교체된 번호: ${replacedInHtml}</span><br>
+                <span style="color:#66aaff;">◀ 교체당한 번호: ${replacedOutHtml}</span><br>
+                <span style="color:#aaa;">📦 B bag: ${middle.join(', ') || '없음'}</span>
+            </div>
+            <div><span class="highlight-blue">📊 (통합 분석 결과 적용됨)</span></div>
+        `;
+
+        const reviewAIInfo = document.getElementById('reviewAIInfo');
+        if (reviewAIInfo) {
+            reviewAIInfo.innerHTML = `
+                <div><span class="highlight-blue">생존자 ${survivors.length}수:</span> ${survivors.join(', ')}</div>
+                <div><span class="highlight-gold">AI 추천 ${basket.length}수:</span> ${basket.join(', ')}</div>
+                <div><span class="highlight-blue">🔻 14수에서 빠진 ${compressedOut4.length}개 (교체 후 남은):</span> ${compressedOutHtml}</div>
+                <div><span style="color:#ff6666;">▶ 교체된 번호: ${replacedInHtml}</span></div>
+                <div><span style="color:#66aaff;">◀ 교체당한 번호: ${replacedOutHtml}</span></div>
+                <div><span style="color:#aaa;">📦 B bag: ${middle.join(', ') || '없음'}</span></div>
+            `;
+        }
+
+        const popup = document.querySelector('.popup-overlay');
+        if (popup) popup.remove();
+        showToast('통합 분석 결과가 적용되었습니다. 5/10조합을 생성할 수 있습니다.');
     }
 
     // ===== 팝업 함수 =====
