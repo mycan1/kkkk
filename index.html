@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SHIN-UI-SON - 통합 분석 시스템 (오류 수정)</title>
+    <title>SHIN-UI-SON - 통합 분석 시스템 (최종 완성)</title>
     <style>
         :root { --gold: #ffd700; --bg: #0b0b0b; --card: #1a1a1a; --accent: #00ffcc; --save: #ff00ff; --danger: #ff4444; }
         body { background-color: var(--bg); color: var(--gold); font-family: 'Malgun Gothic', sans-serif; padding: 8px; margin: 0; }
@@ -117,7 +117,7 @@
     <div class="header-box">
         <div class="prev-win-label" id="prevWinLabel">📌 기준 이전회차 당첨번호</div>
         <div class="base-info" id="baseRoundInfo"></div>
-        <div class="next-episode">SHIN-UI-SON + 통합 분석 (오류 수정)</div>
+        <div class="next-episode">SHIN-UI-SON + 통합 분석 (최종 완성)</div>
         <div class="round-text" id="roundDisplay">예상 회차</div>
         <div id="userDisplay" class="user-info"></div>
         <div id="status" class="status-info">엔진 초기화 중...</div>
@@ -235,6 +235,9 @@
     let replacedIn = [];
     let replacedOut = [];
     let middle = [];
+
+    // 통합 결과 적용 상태 플래그
+    let isIntegratedState = false;
 
     // ===== 사용자 관리 함수 =====
     function updateUserDisplay() {
@@ -464,6 +467,8 @@
 
     // ===== 분석 함수 (UI 업데이트 + 교체 로직) =====
     function analyze() {
+        isIntegratedState = false; // 표준 분석 시 통합 상태 해제
+
         const targetRound = currentBaseRound;
         const prevRound = targetRound - 1;
         const prevData = FULL_DATA.find(row => row[0] === prevRound);
@@ -598,9 +603,11 @@
         analyze();
     }
 
-    // ===== 조합 생성 함수 (5조합 랜덤 수정) =====
+    // ===== 조합 생성 함수 (플래그 적용) =====
     function process(limit) {
-        analyze();
+        if (!isIntegratedState) {
+            analyze(); // 표준 분석 상태에서만 실행
+        }
         generatedCombos = [];
         let used = new Set();
 
@@ -924,7 +931,7 @@
             replacedOut,
             middleBag,
             compress: currentCompress,
-            weightedScore: wScore,   // <-- 추가
+            weightedScore: wScore,
             winningNums: winningNums,
             bonusNum: bonusNum,
             targetRound: startRound
@@ -1000,7 +1007,9 @@
         replacedIn = data.replacedIn;
         replacedOut = data.replacedOut;
         middle = data.middleBag;
-        weightedScore = data.weightedScore;  // <-- 중요! 가중치 업데이트
+        weightedScore = data.weightedScore;
+
+        isIntegratedState = true; // 통합 상태 플래그 설정
 
         const targetRound = currentBaseRound;
         const prevRound = targetRound - 1;
