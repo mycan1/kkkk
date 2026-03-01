@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SHIN-UI-SON - 통합 분석 시스템 (누적 보너스 점수)</title>
     <style>
-        :root { --gold: #ffd700; --bg: #0b0b0b; --card: #1a1a1a; --accent: #00ffcc; --save: #ff00ff; --danger: #ff4444; }
-        body { background-color: var(--bg); color: var(--gold); font-family: 'Malgun Gothic', sans-serif; padding: 8px; margin: 0; }
+        :root { --gold: #ffd700; --bg: #0b0b0b; --card: #1a1a1a; --accent: #00ffcc; --save: #ff00ff; --danger: #ff4444; --text-white: #ffffff; }
+        body { background-color: var(--bg); color: var(--text-white); font-family: 'Malgun Gothic', sans-serif; padding: 8px; margin: 0; }
         .outer-border { border: 2px solid var(--gold); border-radius: 20px; padding: 12px; max-width: 480px; margin: 0 auto; }
         .header-box { text-align: center; margin-bottom: 8px; }
         .prev-win-label { font-size: 10px; color: #aaa; margin-bottom: 2px; }
         .next-episode { font-size: 15px; font-weight: 900; color: #fff; text-shadow: 0 0 8px rgba(255,215,0,0.5); margin-bottom: 2px; }
-        .round-text { font-size: 17px; font-weight: 900; color: #ffd700; text-shadow: 0 0 12px #ffd700; margin: 0 0 2px 0; }
+        .round-text { font-size: 17px; font-weight: 900; color: var(--gold); text-shadow: 0 0 12px var(--gold); margin: 0 0 2px 0; }
         .base-info { display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: center; margin: 5px 0; }
-        .base-num-box { width: 24px; height: 24px; line-height: 24px; text-align: center; font-size: 10px; font-weight: 900; border-radius: 50%; background: #000000; color: var(--gold); border: 1px solid var(--gold); display: inline-block; }
+        .base-num-box { width: 24px; height: 24px; line-height: 24px; text-align: center; font-size: 10px; font-weight: 900; border-radius: 50%; background: #000000; color: var(--text-white); border: 1px solid var(--gold); display: inline-block; }
         .bonus-label { color: #888; font-size: 8px; margin: 0 2px; }
         .status-info { font-size: 10px; color: var(--accent); line-height: 1.3; min-height: 120px; width: 100%; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 6px; box-sizing: border-box; margin-top: 5px; text-align: left; border: 1px solid #333; overflow-y: auto; }
         .highlight-gold { color: var(--gold); font-weight: bold; }
@@ -38,7 +38,7 @@
         .row-line { background: var(--card); border-radius: 10px; padding: 8px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #333; cursor: pointer; transition: 0.2s; }
         .row-line:hover { border-color: var(--accent); }
         .num-container { display: flex; gap: 4px; flex-grow: 1; justify-content: center; }
-        .num-box { width: 28px; height: 28px; line-height: 28px; text-align: center; font-size: 11px; font-weight: 900; border-radius: 50%; background: #000000 !important; color: var(--gold) !important; border: 1px solid var(--gold) !important; }
+        .num-box { width: 28px; height: 28px; line-height: 28px; text-align: center; font-size: 11px; font-weight: 900; border-radius: 50%; background: #000000 !important; color: var(--text-white) !important; border: 1px solid var(--gold) !important; }
         .num-box.eliminated { border-color: #ff8888 !important; color: #ff8888 !important; }
         .num-box.replaced-in { border-color: #ff6666 !important; color: #ff6666 !important; background: #330000 !important; }
         .num-box.replaced-out { border-color: #66aaff !important; color: #66aaff !important; background: #001a33 !important; }
@@ -97,7 +97,7 @@
         .info { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
         .idx { font-size: 13px; color: var(--accent); font-weight: bold; min-width: 30px; }
         .balls { display: flex; gap: 4px; flex-wrap: wrap; }
-        .ball { width: 28px; height: 28px; line-height: 28px; text-align: center; border-radius: 50%; background: #000; border: 1px solid var(--gold); color: var(--gold); font-size: 11px; font-weight: bold; }
+        .ball { width: 28px; height: 28px; line-height: 28px; text-align: center; border-radius: 50%; background: #000; border: 1px solid var(--gold); color: var(--text-white); font-size: 11px; font-weight: bold; }
         .strategy-tag { display: flex; flex-wrap: wrap; gap: 6px; font-size: 10px; background: #2a2a2a; padding: 5px; border-radius: 5px; margin-bottom: 6px; }
         .strategy-tag span { background: #333; padding: 2px 6px; border-radius: 12px; color: #ccc; }
         .safe { background: #006400 !important; color: #ffd700 !important; }
@@ -116,29 +116,29 @@
         <div id="status" class="status-info">엔진 초기화 중...</div>
     </div>
 
-    <!-- 압축수 선택 슬라이더 -->
+    <!-- 압축수 선택 슬라이더 (1~14) -->
     <div class="control-panel">
-        <label>🔢 압축수 선택 (10~15)</label>
+        <label>🔢 압축수 선택 (1~14, 10 이하는 B바구니 고려)</label>
         <div class="slider-container">
-            <input type="range" id="compressRange" min="10" max="15" value="10" step="1" 
+            <input type="range" id="compressRange" min="1" max="14" value="10" step="1" 
                    oninput="document.getElementById('compressValue').innerText = this.value">
             <span id="compressValue" style="min-width:30px; color:var(--gold); font-weight:bold;">10</span>
             <button onclick="applyCompress()" style="background:var(--accent); color:#000; border:none; border-radius:8px; padding:4px 10px;">적용</button>
         </div>
-        <div class="round-desc">AI 추천 숫자 개수 (10~15). 5/10조합 생성 시 반영됩니다.</div>
+        <div class="round-desc">AI 추천 숫자 개수 (1~14). 10 이하 설정 시 B바구니와 중복되지 않는 수에서 제외됩니다.</div>
     </div>
 
-    <!-- 분석 설정 -->
+    <!-- 분석 설정 (기본값 55주, 30개 회차) -->
     <div class="control-panel">
         <label>📅 분석 설정</label>
         <div style="display:flex; gap:5px; justify-content:center; align-items:center; flex-wrap:wrap;">
-            <input type="number" id="intervalWeeks" min="1" max="200" value="51" style="width:60px; background:#222; border:2px solid var(--accent); color:#fff; border-radius:8px; text-align:center; height:34px;">
+            <input type="number" id="intervalWeeks" min="1" max="300" value="55" style="width:60px; background:#222; border:2px solid var(--accent); color:#fff; border-radius:8px; text-align:center; height:34px;">
             <span style="color:var(--gold);">주 간격</span>
-            <input type="number" id="refCount" min="1" max="10" value="4" style="width:60px; background:#222; border:2px solid var(--accent); color:#fff; border-radius:8px; text-align:center; height:34px;">
+            <input type="number" id="refCount" min="1" max="30" value="30" style="width:60px; background:#222; border:2px solid var(--accent); color:#fff; border-radius:8px; text-align:center; height:34px;">
             <span style="color:var(--gold);">개 회차</span>
             <button onclick="applyAnalysisSettings()" style="background:var(--accent); color:#000; border:none; border-radius:8px; padding:4px 10px;">적용</button>
         </div>
-        <div class="round-desc">과거 회차 간격과 개수를 설정합니다.</div>
+        <div class="round-desc">과거 회차 간격과 개수를 설정합니다 (기본 55주, 30개).</div>
     </div>
 
     <!-- 분석 모드 -->
@@ -151,7 +151,7 @@
         <div class="round-desc">연속: 각 회차별 결과 | 통합: 여러 회차 합쳐 하나의 결과</div>
     </div>
 
-    <!-- 분석 범위 -->
+    <!-- 분석 범위 (최대 30회) -->
     <div class="control-panel">
         <label>🔢 분석 범위 (1~30회)</label>
         <div class="batch-input">
@@ -159,14 +159,14 @@
         </div>
     </div>
 
-    <!-- 회차 선택 -->
+    <!-- 회차 선택 (입력한 회차를 마지막 회차로 사용) -->
     <div class="round-selector">
-        <label>🎯 분석할 회차 선택</label>
+        <label>🎯 마지막 회차 선택 (예: 1212 입력 시 1212회차를 마지막으로 분석)</label>
         <div class="base-round-input">
             <input type="number" id="baseRoundInput" min="901" max="1300" value="1213" step="1">
             <button onclick="setBaseRound()">설정</button>
         </div>
-        <div class="round-desc">(900~1212 데이터 기반)</div>
+        <div class="round-desc">입력한 회차는 분석에서 제외되며, 예상 회차로 표시됩니다. (900~1212 데이터 기반)</div>
     </div>
 
     <!-- 버튼 그룹 -->
@@ -210,22 +210,22 @@
     let dynamicAvgSum = 145;
     let userName = "";
     let savedNumbers = [];
-    let currentBaseRound = 1213;
+    let currentBaseRound = 1213;   // 사용자가 입력한 마지막 회차 (예: 1213 입력 시 1213회차를 마지막으로 간주)
     let generatedCombos = [];
     let weightedScore = {};
     let bonusNums = [];
     let compressedOut4 = [];
     let full14 = [];
-    let currentCompress = 10;
-    let intervalWeeks = 51;
-    let referenceCount = 4;
+    let currentCompress = 10;        // 사용자 선택 압축수 (1~14)
+    let intervalWeeks = 55;           // 기본값 55주
+    let referenceCount = 30;          // 기본값 30개 회차
     let replacedIn = [];
     let replacedOut = [];
     let middle = [];
     let isIntegratedState = false;
     let lastIntegratedResult = null;
 
-    // 누적 보너스 점수 저장소 (전역)
+    // 누적 보너스 점수 저장소
     let bonusAccumScore = {};
 
     // 게임 변수
@@ -242,6 +242,7 @@
             <button class="change-name-btn" onclick="changeName()">이름변경</button>
             <button class="change-name-btn" style="background:#ff4444;" onclick="deleteUser()">삭제</button>`;
     }
+    
     function changeName() {
         const newName = prompt("새로운 이름을 입력하세요:", userName);
         if (newName && newName.trim() !== "") {
@@ -253,6 +254,7 @@
             showToast(`이름이 ${userName}(으)로 변경되었습니다`);
         }
     }
+    
     function deleteUser() {
         if(confirm(`정말 ${userName}님의 모든 기록을 삭제하시겠습니까?`)) {
             localStorage.removeItem(`lottoSave_${userName}`);
@@ -263,6 +265,7 @@
             showToast(`새로운 손님 계정(${userName})으로 시작합니다`);
         }
     }
+    
     function initUser() {
         const savedName = localStorage.getItem('lottoUserName');
         if (savedName) userName = savedName;
@@ -274,6 +277,7 @@
         savedNumbers = JSON.parse(localStorage.getItem(storageKey)) || [];
         updateUserDisplay();
     }
+    
     function showToast(message, duration = 1500) {
         const toast = document.getElementById('toast');
         const span = toast.querySelector('span');
@@ -283,6 +287,7 @@
             toast.style.display = 'none';
         }, duration);
     }
+    
     function saveToBox(s) {
         if (!savedNumbers.includes(s)) {
             savedNumbers.push(s);
@@ -292,6 +297,7 @@
             showToast('⚠️ 이미 저장된 조합입니다');
         }
     }
+    
     function saveAllCombos() {
         if (generatedCombos.length === 0) {
             showToast('저장할 조합이 없습니다');
@@ -311,6 +317,7 @@
             showToast('모두 이미 저장된 조합입니다');
         }
     }
+    
     function deleteSingleItem(index) {
         if(confirm("이 조합을 삭제할까요?")) {
             savedNumbers.splice(index, 1);
@@ -319,10 +326,12 @@
             showToast('🗑️ 삭제되었습니다');
         }
     }
+    
     function loadFromStorage(nums) {
         alert(`선택된 번호: ${nums.split(',').join(', ')}`);
         closePopup();
     }
+    
     function renderStorage() {
         const st = document.getElementById('storage');
         if(savedNumbers.length === 0) { 
@@ -349,16 +358,17 @@
     // ===== 분석 설정 =====
     function applyCompress() {
         const val = parseInt(document.getElementById('compressRange').value);
-        if (val >= 10 && val <= 15) {
+        if (val >= 1 && val <= 14) {
             currentCompress = val;
-            analyze();
-            showToast(`압축수 ${currentCompress} 적용됨`);
+            analyze();  // 재분석
+            showToast(`압축수 ${currentCompress} 적용`);
         }
     }
+    
     function applyAnalysisSettings() {
         const interval = parseInt(document.getElementById('intervalWeeks').value);
         const count = parseInt(document.getElementById('refCount').value);
-        if (interval > 0 && count > 0 && count <= 10) {
+        if (interval > 0 && count > 0 && count <= 30) {
             intervalWeeks = interval;
             referenceCount = count;
             analyze();
@@ -426,7 +436,7 @@
         let full14Set = new Set([...top8, ...bottom6]);
         let full14 = Array.from(full14Set).sort((a,b)=>a-b);
 
-        // 압축수 basket
+        // 압축수 basket (상위 60% + 하위 40%)
         let topCount = Math.floor(compress * 0.6);
         let bottomCount = compress - topCount;
         topCount = Math.min(topCount, rankedMain.length);
@@ -451,7 +461,8 @@
             full14,
             weightedScore: wScore,
             bonusNums: Array.from(new Set(bonusPool)).sort((a,b)=>a-b),
-            rankedMain
+            rankedMain,
+            full14Set
         };
     }
 
@@ -460,7 +471,7 @@
         isIntegratedState = false;
         lastIntegratedResult = null;
 
-        const targetRound = currentBaseRound;
+        const targetRound = currentBaseRound;   // 예상 회차 = 입력한 회차
         const prevRound = targetRound - 1;
         const prevData = FULL_DATA.find(row => row[0] === prevRound);
         if (!prevData) {
@@ -470,15 +481,63 @@
         const lastWinning = prevData.slice(1, 7);
 
         const res = computeForRound(targetRound, currentCompress);
+        let computedBasket = res.basket;
         survivors = res.survivors;
-        basket = res.basket;
         full14 = res.full14;
         let originalCompressedOut = res.compressedOut;
         weightedScore = res.weightedScore;
         bonusNums = res.bonusNums;
         const rankedMain = res.rankedMain;
+        const full14Set = res.full14Set;
 
-        // 교체 로직
+        // ===== 기준 회차 당첨번호 제거 =====
+        const currentWinData = FULL_DATA.find(row => row[0] === targetRound);
+        let currentWinningNums = [];
+        if (currentWinData) {
+            currentWinningNums = currentWinData.slice(1, 7);
+            // basket에서 기준 회차 당첨번호 제거
+            computedBasket = computedBasket.filter(num => !currentWinningNums.includes(num));
+        }
+
+        // ===== 압축수 조정 (10 이하일 경우 B바구니와 중복되지 않는 수에서 제외) =====
+        if (currentCompress < 10 && computedBasket.length > currentCompress) {
+            // B바구니 후보 (생존자 - 14수)
+            let middleCandidates = survivors.filter(num => !full14Set.has(num));
+            
+            // 현재 basket에서 제외할 숫자들 (점수가 낮은 순)
+            let basketWithScore = computedBasket.map(num => ({ num, score: weightedScore[num] || 0 }));
+            basketWithScore.sort((a, b) => a.score - b.score);
+            
+            let newBasket = [...computedBasket];
+            
+            // 필요한 만큼 제외 (currentCompress만큼 남을 때까지)
+            while (newBasket.length > currentCompress) {
+                for (let i = 0; i < basketWithScore.length; i++) {
+                    let candidate = basketWithScore[i].num;
+                    if (newBasket.includes(candidate)) {
+                        // 이 숫자가 B바구니에 있는지 확인
+                        if (!middleCandidates.includes(candidate)) {
+                            newBasket = newBasket.filter(n => n !== candidate);
+                            break;
+                        }
+                    }
+                }
+            }
+            computedBasket = newBasket.sort((a,b)=>a-b);
+        }
+
+        // ===== 크기 보정: 만약 기준 회차 당첨번호 제거로 인해 currentCompress보다 작아졌다면 추가 =====
+        if (computedBasket.length < currentCompress) {
+            // 추가할 후보: rankedMain에서 아직 basket에 없는 번호 중, 기준 회차 당첨번호는 제외
+            let candidates = rankedMain.filter(num => 
+                !computedBasket.includes(num) && !currentWinningNums.includes(num)
+            );
+            let needed = currentCompress - computedBasket.length;
+            let add = candidates.slice(0, needed);
+            computedBasket = [...computedBasket, ...add].sort((a,b)=>a-b);
+        }
+
+        // 교체 로직 (기존과 동일)
         let candidates = originalCompressedOut.filter(num => lastWinning.includes(num));
         if (candidates.length < 2) {
             let sortedOut = [...originalCompressedOut].sort((a, b) => (weightedScore[b] || 0) - (weightedScore[a] || 0));
@@ -492,11 +551,11 @@
 
         let lowestTwo = [];
         if (candidates.length > 0) {
-            let basketWithScore = basket.map(num => ({ num, score: weightedScore[num] || 0 }));
+            let basketWithScore = computedBasket.map(num => ({ num, score: weightedScore[num] || 0 }));
             basketWithScore.sort((a, b) => a.score - b.score);
             lowestTwo = basketWithScore.slice(0, candidates.length).map(item => item.num);
 
-            let newBasket = [...basket];
+            let newBasket = [...computedBasket];
             for (let i = 0; i < candidates.length; i++) {
                 let idx = newBasket.indexOf(lowestTwo[i]);
                 if (idx !== -1) {
@@ -504,17 +563,19 @@
                 }
             }
             newBasket = [...new Set(newBasket)].sort((a, b) => a - b);
-            if (newBasket.length === basket.length) {
+            if (newBasket.length === computedBasket.length) {
                 basket = newBasket;
                 compressedOut4 = originalCompressedOut.filter(num => !candidates.includes(num));
                 replacedIn = candidates;
                 replacedOut = lowestTwo;
             } else {
+                basket = computedBasket;
                 compressedOut4 = originalCompressedOut;
                 replacedIn = [];
                 replacedOut = [];
             }
         } else {
+            basket = computedBasket;
             compressedOut4 = originalCompressedOut;
             replacedIn = [];
             replacedOut = [];
@@ -522,7 +583,6 @@
 
         // middle (B bag)
         let basketSet = new Set(basket);
-        let full14Set = new Set(full14);
         let survivorsWithoutBonus = survivors.filter(num => !bonusNums.includes(num));
         middle = survivorsWithoutBonus.filter(num => !full14Set.has(num));
         middle = [...middle, ...replacedOut].filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>a-b);
@@ -562,28 +622,71 @@
             (replacedIn.includes(n) ? `<span style="color:#ff6666; font-weight:bold;">${n}</span>` : n)
         ).join(', ') || '없음';
 
+        // 메인 상태창에 당첨번호 녹색 표시
+        const winSet = new Set(baseNums);
+        if (bonus) winSet.add(bonus);
+        
+        let statusBasketHtml = basket.map(n => {
+            if (winSet.has(n)) return `<span style="color:#00ff00; font-weight:bold;">${n}</span>`;
+            if (replacedIn.includes(n)) return `<span style="color:#ff6666; font-weight:bold;">${n}</span>`;
+            if (replacedOut.includes(n)) return `<span style="color:#66aaff; font-weight:bold;">${n}</span>`;
+            return `<span style="color:#fff;">${n}</span>`;
+        }).join(', ');
+        
+        let statusCompressedOutHtml = compressedOut4.map(n => {
+            if (winSet.has(n)) return `<span style="color:#00ff00; font-weight:bold;">${n}</span>`;
+            if (replacedIn.includes(n)) return `<span style="color:#ff6666; font-weight:bold;">${n}</span>`;
+            if (replacedOut.includes(n)) return `<span style="color:#66aaff; font-weight:bold;">${n}</span>`;
+            return `<span style="color:#fff;">${n}</span>`;
+        }).join(', ');
+        
+        let statusMiddleHtml = middle.map(n => {
+            if (winSet.has(n)) return `<span style="color:#00ff00; font-weight:bold;">${n}</span>`;
+            if (replacedOut.includes(n)) return `<span style="color:#66aaff; font-weight:bold;">${n}</span>`;
+            if (replacedIn.includes(n)) return `<span style="color:#ff6666; font-weight:bold;">${n}</span>`;
+            return `<span style="color:#fff;">${n}</span>`;
+        }).join(', ') || '없음';
+
         document.getElementById('status').innerHTML = `
             <div><span class="highlight-gold">★ 압축수 ${currentCompress} / 간격 ${intervalWeeks}주 / ${referenceCount}개 회차</span></div>
             <div>생존자 ${survivors.length}수: ${survivors.join(', ')}</div>
-            <div>AI 추천 ${basket.length}수: ${basket.join(', ')}</div>
-            <div>🔻 14수에서 빠진 ${compressedOut4.length}개: ${compressedOutHtml}</div>
+            <div>AI 추천 ${basket.length}수: ${statusBasketHtml}</div>
+            <div>🔻 14수에서 빠진 ${compressedOut4.length}개: ${statusCompressedOutHtml}</div>
             <div style="margin-top:4px;">
                 <span style="color:#ff6666;">▶ 교체된 번호: ${replacedInHtml}</span><br>
                 <span style="color:#66aaff;">◀ 교체당한 번호: ${replacedOutHtml}</span><br>
-                <span style="color:#aaa;">📦 B bag: ${middleHtml}</span>
+                <span style="color:#aaa;">📦 B bag: ${statusMiddleHtml}</span>
             </div>
             <div><span class="highlight-blue">📊 기준 합계 평균:</span> ${dynamicAvgSum}</div>
         `;
 
+        // 복기창 AI 정보 업데이트
         const reviewAIInfo = document.getElementById('reviewAIInfo');
         if (reviewAIInfo) {
+            const reviewWinSet = new Set(baseNums);
+            if (bonus) reviewWinSet.add(bonus);
+            
+            const formatReviewNumber = (num) => {
+                if (reviewWinSet.has(num)) return `<span style="color:#00ff00; font-weight:bold;">${num}</span>`;
+                if (replacedIn.includes(num)) return `<span style="color:#ff6666; font-weight:bold;">${num}</span>`;
+                if (replacedOut.includes(num)) return `<span style="color:#66aaff; font-weight:bold;">${num}</span>`;
+                return `<span style="color:#fff;">${num}</span>`;
+            };
+
+            let reviewSurvivorsHtml = survivors.map(n => formatReviewNumber(n)).join(', ');
+            let reviewBasketHtml = basket.map(n => formatReviewNumber(n)).join(', ');
+            let reviewCompressedOutHtml = compressedOut4.map(n => formatReviewNumber(n)).join(', ');
+            let reviewReplacedInHtml = replacedIn.length ? replacedIn.map(n => formatReviewNumber(n)).join(', ') : '없음';
+            let reviewReplacedOutHtml = replacedOut.length ? replacedOut.map(n => formatReviewNumber(n)).join(', ') : '없음';
+            let reviewMiddleHtml = middle.map(n => formatReviewNumber(n)).join(', ') || '없음';
+
             reviewAIInfo.innerHTML = `
-                <div><span class="highlight-blue">생존자 ${survivors.length}수:</span> ${survivors.join(', ')}</div>
-                <div><span class="highlight-gold">AI 추천 ${basket.length}수:</span> ${basket.join(', ')}</div>
-                <div><span class="highlight-blue">🔻 14수에서 빠진 ${compressedOut4.length}개:</span> ${compressedOutHtml}</div>
-                <div><span style="color:#ff6666;">▶ 교체된 번호: ${replacedInHtml}</span></div>
-                <div><span style="color:#66aaff;">◀ 교체당한 번호: ${replacedOutHtml}</span></div>
-                <div><span style="color:#aaa;">📦 B bag: ${middleHtml}</span></div>
+                <div><span class="highlight-blue">생존자 ${survivors.length}수:</span> ${reviewSurvivorsHtml}</div>
+                <div><span class="highlight-gold">AI 추천 ${basket.length}수:</span> ${reviewBasketHtml}</div>
+                <div><span class="highlight-blue">🔻 14수에서 빠진 ${compressedOut4.length}개:</span> ${reviewCompressedOutHtml}</div>
+                <div><span style="color:#ff6666;">▶ 교체된 번호: ${reviewReplacedInHtml}</span></div>
+                <div><span style="color:#66aaff;">◀ 교체당한 번호: ${reviewReplacedOutHtml}</span></div>
+                <div><span style="color:#aaa;">📦 B bag: ${reviewMiddleHtml}</span></div>
             `;
         }
     }
@@ -598,7 +701,7 @@
         analyze();
     }
 
-    // ===== 조합 생성 (교체당한 번호 50% 포함) =====
+    // ===== 조합 생성 =====
     function process(limit) {
         if (!isIntegratedState) analyze();
         generatedCombos = [];
@@ -618,7 +721,7 @@
                 let pool = (i % 2 === 0) ? full14 : basket;
                 let available = [...pool].filter(n => !combo.has(n));
 
-                // 빠진 4개 중 하나 포함 (기존 로직)
+                // 빠진 4개 중 하나 포함
                 let special = null;
                 if (compressedOut4.length > 0) {
                     let availableCompressed = compressedOut4.filter(n => !combo.has(n));
@@ -721,32 +824,79 @@
         content.innerHTML = html;
         document.getElementById('comboListPopup').style.display = 'flex';
     }
+    
     function saveComboFromList(key) { saveToBox(key); }
     function closeComboListPopup() { document.getElementById('comboListPopup').style.display = 'none'; }
 
-    // ===== 연속 분석 =====
+    // ===== 연속 분석 (당첨번호 표시 추가) =====
     function runBatchAnalysis() {
         const startRound = currentBaseRound;
         const count = parseInt(document.getElementById('batchCount').value) || 10;
         if (count < 1 || count > 30) { alert('1~30 사이로 입력하세요.'); return; }
+        
         const results = [];
         for (let i = 0; i < count; i++) {
             const targetRound = startRound - i;
             const pastRounds = [];
             for (let j = 1; j <= referenceCount; j++) pastRounds.push(targetRound - intervalWeeks * j);
             if (!pastRounds.every(r => FULL_DATA.some(row => row[0] === r))) continue;
+            
             const res = computeForRound(targetRound, currentCompress);
-            results.push({ round: targetRound, basket: res.basket, survivors: res.survivors, compressedOut: res.compressedOut });
+            
+            // 해당 회차의 당첨번호 찾기
+            const winData = FULL_DATA.find(row => row[0] === targetRound);
+            const winningNums = winData ? winData.slice(1, 7) : [];
+            const bonusNum = winData ? winData[7] : null;
+            
+            results.push({ 
+                round: targetRound, 
+                basket: res.basket, 
+                survivors: res.survivors, 
+                compressedOut: res.compressedOut,
+                winningNums: winningNums,
+                bonusNum: bonusNum
+            });
         }
+        
         if (results.length === 0) { alert('분석 가능한 회차가 없습니다.'); return; }
-        let html = '<div style="max-height:70vh; overflow-y:auto;"><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#333;"><th>회차</th><th>AI 수</th><th>생존자</th><th>빠진 번호</th></tr></thead><tbody>';
-        results.forEach(r => { html += `<tr><td>${r.round}</td><td>${r.basket.join(',')}</td><td>${r.survivors.length}</td><td style="color:#ff8888;">${r.compressedOut.join(',')||'-'}</td></tr>`; });
-        html += '</tbody></table></div><div style="display:flex; gap:8px; justify-content:center; margin-top:12px;"><button class="game-btn" onclick="this.closest(\'.popup-overlay\').remove()">닫기</button></div>';
-        const popup = document.createElement('div'); popup.className = 'popup-overlay'; popup.innerHTML = `<div class="popup-content">${html}</div>`; document.body.appendChild(popup);
+        
+        // 결과 테이블 생성 (당첨번호 녹색 표시)
+        let html = '<div style="max-height:70vh; overflow-y:auto;"><table style="width:100%; border-collapse:collapse;">';
+        html += '<thead><tr style="background:#333;"><th>회차</th><th>AI 추천수</th><th>당첨번호</th></tr></thead><tbody>';
+        
+        results.forEach(r => {
+            // AI 추천수 표시 (당첨번호는 녹색으로)
+            let basketHtml = r.basket.map(n => {
+                if (r.winningNums.includes(n)) {
+                    return `<span style="color:#00ff00; font-weight:bold;">${n}</span>`;
+                } else if (r.bonusNum === n) {
+                    return `<span style="color:#00ff00; font-weight:bold;">${n}(B)</span>`;
+                }
+                return `<span style="color:#fff;">${n}</span>`;
+            }).join(', ');
+            
+            // 당첨번호 표시
+            let winningHtml = r.winningNums.map(n => `<span style="color:#00ff00; font-weight:bold;">${n}</span>`).join(', ');
+            if (r.bonusNum) {
+                winningHtml += ` <span style="color:#888;">보너스</span> <span style="color:#00ff00; font-weight:bold;">${r.bonusNum}</span>`;
+            }
+            
+            html += `<tr><td>${r.round}</td><td>${basketHtml}</td><td>${winningHtml}</td></tr>`;
+        });
+        
+        html += '</tbody></table></div>';
+        html += '<div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">';
+        html += '<button class="game-btn" onclick="this.closest(\'.popup-overlay\').remove()">닫기</button>';
+        html += '</div>';
+        
+        const popup = document.createElement('div'); 
+        popup.className = 'popup-overlay'; 
+        popup.innerHTML = `<div class="popup-content">${html}</div>`; 
+        document.body.appendChild(popup);
         popup.addEventListener('click', e => { if (e.target === popup) popup.remove(); });
     }
 
-    // ===== 통합 분석 (누적 보너스 점수 적용) =====
+    // ===== 통합 분석 (기준 회차 제외) =====
     function runIntegratedAnalysis() {
         const startRound = currentBaseRound;
         const count = parseInt(document.getElementById('batchCount').value) || 10;
@@ -761,7 +911,7 @@
         const prevData = FULL_DATA.find(row => row[0] === prevRound);
         const lastWinning = prevData ? prevData.slice(1, 7) : [];
 
-        // 데이터 수집 (기준 회차 제외)
+        // 데이터 수집 (기준 회차 제외) - i=1부터 시작
         let allMain = [], allBonus = [], mainWithRound = [];
         for (let i = 1; i <= count; i++) {
             const round = startRound - i;
@@ -797,15 +947,14 @@
             if (wScore[num] !== undefined) wScore[num] += 0.2;
         });
 
-        // ---------- 누적 보너스 가산점 적용 ----------
-        // 현재 시점의 누적 점수를 wScore에 반영
+        // 누적 보너스 가산점 적용
         for (let num = 1; num <= 45; num++) {
             if (bonusAccumScore[num] && bonusAccumScore[num] > 0) {
                 wScore[num] = (wScore[num] || 0) + bonusAccumScore[num];
             }
         }
 
-        // 점수순 정렬 (누적 점수 반영된 상태)
+        // 점수순 정렬
         let rankedMain = Object.keys(wScore).map(Number).sort((a, b) => {
             let aScore = wScore[a] || 0;
             let bScore = wScore[b] || 0;
@@ -814,7 +963,7 @@
             return a - b;
         });
 
-        // 고정 14수 (상위8 + 하위6)
+        // 고정 14수
         let top8 = rankedMain.slice(0, 8);
         let bottom6 = rankedMain.slice(-6);
         let full14Set = new Set([...top8, ...bottom6]);
@@ -828,13 +977,39 @@
         let topPart = rankedMain.slice(0, topCount);
         let bottomPart = rankedMain.slice(-bottomCount);
         let basketSet = new Set([...topPart, ...bottomPart]);
-        let basket = Array.from(basketSet).sort((a,b)=>a-b);
+        let computedBasket = Array.from(basketSet).sort((a,b)=>a-b);
 
         // 생존자
         let survivors = [...new Set([...allMain, ...allBonus])].sort((a,b)=>a-b);
 
-        // 빠진 4개 (14수에 속하지만 압축수에는 없는 번호)
+        // 빠진 4개
         let compressedOut = full14.filter(num => !basketSet.has(num));
+
+        // ===== 압축수 조정 (10 이하일 경우 B바구니와 중복되지 않는 수에서 제외) =====
+        if (currentCompress < 10 && computedBasket.length > currentCompress) {
+            let middleCandidates = survivors.filter(num => !full14Set.has(num));
+            
+            let basketWithScore = computedBasket.map(num => ({ num, score: wScore[num] || 0 }));
+            basketWithScore.sort((a, b) => a.score - b.score);
+            
+            let newBasket = [...computedBasket];
+            
+            while (newBasket.length > currentCompress) {
+                for (let i = 0; i < basketWithScore.length; i++) {
+                    let candidate = basketWithScore[i].num;
+                    if (newBasket.includes(candidate)) {
+                        if (!middleCandidates.includes(candidate)) {
+                            newBasket = newBasket.filter(n => n !== candidate);
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            computedBasket = newBasket.sort((a,b)=>a-b);
+            compressedOut = full14.filter(num => !computedBasket.includes(num));
+            basketSet = new Set(computedBasket);
+        }
 
         // 교체 로직
         let candidates = compressedOut.filter(num => lastWinning.includes(num));
@@ -850,11 +1025,11 @@
 
         let replacedIn = [], replacedOut = [];
         if (candidates.length > 0) {
-            let basketWithScore = basket.map(num => ({ num, score: wScore[num] || 0 }));
+            let basketWithScore = computedBasket.map(num => ({ num, score: wScore[num] || 0 }));
             basketWithScore.sort((a, b) => a.score - b.score);
             let lowestTwo = basketWithScore.slice(0, candidates.length).map(item => item.num);
 
-            let newBasket = [...basket];
+            let newBasket = [...computedBasket];
             for (let i = 0; i < candidates.length; i++) {
                 let idx = newBasket.indexOf(lowestTwo[i]);
                 if (idx !== -1) {
@@ -862,44 +1037,37 @@
                 }
             }
             newBasket = [...new Set(newBasket)].sort((a, b) => a - b);
-            if (newBasket.length === basket.length) {
-                basket = newBasket;
-                compressedOut = full14.filter(num => !new Set(basket).has(num));
+            if (newBasket.length === computedBasket.length) {
+                computedBasket = newBasket;
+                compressedOut = full14.filter(num => !new Set(computedBasket).has(num));
                 replacedIn = candidates;
                 replacedOut = lowestTwo;
             }
         }
 
-        // B 바구니 (생존자 - 14수 + 교체당한 번호) → 점수 상위 5개로 축소
+        // B 바구니
         let middleBag = survivors.filter(num => !full14Set.has(num));
         middleBag = [...middleBag, ...replacedOut].filter((v,i,a)=>a.indexOf(v)===i).sort((a,b)=>a-b);
         
-        // 점수 기준 상위 5개로 축소 (교체당한 번호는 우선 포함)
         let scoredMiddle = middleBag.map(num => ({ num, score: wScore[num] || 0 }));
         scoredMiddle.sort((a,b) => b.score - a.score);
         let topMiddle = scoredMiddle.slice(0, 5).map(item => item.num);
         topMiddle = [...new Set([...topMiddle, ...replacedOut])].sort((a,b)=>a-b);
         middleBag = topMiddle;
 
-        // ---------- 누적 점수 업데이트 ----------
-        // 이번 분석의 보너스 번호 집합
+        // 누적 점수 업데이트
         let bonusSet = new Set(allBonus);
-        // 이번 회차 당첨번호 집합
         let currentWinSet = new Set(winningNums);
 
-        // 보너스 번호 중 14수에 들지 못한 번호를 순회
         let bonusNotInFull14 = [...bonusSet].filter(num => !full14Set.has(num));
         bonusNotInFull14.forEach(num => {
             if (currentWinSet.has(num)) {
-                // 당첨된 번호는 누적 점수 초기화
                 bonusAccumScore[num] = 0;
             } else {
-                // 당첨되지 않은 번호는 누적 점수 추가 (0.03)
                 bonusAccumScore[num] = (bonusAccumScore[num] || 0) + 0.03;
             }
         });
 
-        // 너무 커지는 것을 방지 (상한선 0.5)
         for (let num in bonusAccumScore) {
             if (bonusAccumScore[num] > 0.5) {
                 bonusAccumScore[num] = 0.5;
@@ -908,19 +1076,31 @@
 
         const integratedResult = {
             range: `${startRound-1} ~ ${startRound - count}회 통합 (${startRound}회 제외)`,
-            basket, survivors, compressedOut, full14, replacedIn, replacedOut, middleBag,
-            compress: currentCompress, winningNums, bonusNum, targetRound: startRound,
+            basket: computedBasket, 
+            survivors, 
+            compressedOut, 
+            full14, 
+            replacedIn, 
+            replacedOut, 
+            middleBag,
+            compress: currentCompress, 
+            winningNums, 
+            bonusNum, 
+            targetRound: startRound,
             weightedScore: wScore,
             allBonus: allBonus
         };
 
-        // 화면 업데이트
         lastIntegratedResult = integratedResult;
         isIntegratedState = true;
-        basket = integratedResult.basket; survivors = integratedResult.survivors;
-        compressedOut4 = integratedResult.compressedOut; full14 = integratedResult.full14;
-        replacedIn = integratedResult.replacedIn; replacedOut = integratedResult.replacedOut;
-        middle = integratedResult.middleBag; weightedScore = integratedResult.weightedScore;
+        basket = integratedResult.basket; 
+        survivors = integratedResult.survivors;
+        compressedOut4 = integratedResult.compressedOut; 
+        full14 = integratedResult.full14;
+        replacedIn = integratedResult.replacedIn; 
+        replacedOut = integratedResult.replacedOut;
+        middle = integratedResult.middleBag; 
+        weightedScore = integratedResult.weightedScore;
 
         if (prevData) {
             const baseNums = prevData.slice(1, 7);
@@ -941,15 +1121,39 @@
             (replacedIn.includes(n) ? `<span style="color:#ff6666; font-weight:bold;">${n}</span>` : n)
         ).join(', ') || '없음';
 
+        const winSet = new Set(winningNums || []);
+        if (bonusNum) winSet.add(bonusNum);
+        
+        let statusBasketHtml = basket.map(n => {
+            if (winSet.has(n)) return `<span style="color:#00ff00; font-weight:bold;">${n}</span>`;
+            if (replacedIn.includes(n)) return `<span style="color:#ff6666; font-weight:bold;">${n}</span>`;
+            if (replacedOut.includes(n)) return `<span style="color:#66aaff; font-weight:bold;">${n}</span>`;
+            return `<span style="color:#fff;">${n}</span>`;
+        }).join(', ');
+        
+        let statusCompressedOutHtml = compressedOut4.map(n => {
+            if (winSet.has(n)) return `<span style="color:#00ff00; font-weight:bold;">${n}</span>`;
+            if (replacedIn.includes(n)) return `<span style="color:#ff6666; font-weight:bold;">${n}</span>`;
+            if (replacedOut.includes(n)) return `<span style="color:#66aaff; font-weight:bold;">${n}</span>`;
+            return `<span style="color:#fff;">${n}</span>`;
+        }).join(', ');
+        
+        let statusMiddleHtml = middle.map(n => {
+            if (winSet.has(n)) return `<span style="color:#00ff00; font-weight:bold;">${n}</span>`;
+            if (replacedOut.includes(n)) return `<span style="color:#66aaff; font-weight:bold;">${n}</span>`;
+            if (replacedIn.includes(n)) return `<span style="color:#ff6666; font-weight:bold;">${n}</span>`;
+            return `<span style="color:#fff;">${n}</span>`;
+        }).join(', ') || '없음';
+
         document.getElementById('status').innerHTML = `
-            <div><span class="highlight-gold">★ [통합] 압축수 ${currentCompress}</span></div>
+            <div><span class="highlight-gold">★ [통합] 압축수 ${currentCompress} (실제 추천수: ${basket.length})</span></div>
             <div>생존자 ${survivors.length}수: ${survivors.join(', ')}</div>
-            <div>AI 추천 ${basket.length}수: ${basket.join(', ')}</div>
-            <div>🔻 14수에서 빠진 ${compressedOut4.length}개: ${compressedOutHtml}</div>
+            <div>AI 추천 ${basket.length}수: ${statusBasketHtml}</div>
+            <div>🔻 14수에서 빠진 ${compressedOut4.length}개: ${statusCompressedOutHtml}</div>
             <div style="margin-top:4px;">
                 <span style="color:#ff6666;">▶ 교체된 번호: ${replacedInHtml}</span><br>
                 <span style="color:#66aaff;">◀ 교체당한 번호: ${replacedOutHtml}</span><br>
-                <span style="color:#aaa;">📦 B bag: ${middleHtml}</span>
+                <span style="color:#aaa;">📦 B bag: ${statusMiddleHtml}</span>
             </div>
             <div><span class="highlight-blue">📊 (통합 분석 결과 적용됨)</span></div>
         `;
@@ -962,18 +1166,16 @@
         if (data.bonusNum) winSet.add(data.bonusNum);
 
         const formatNumber = (num) => {
-            let color = '#ffd700';
-            if (winSet.has(num)) color = '#00ff00';
-            else if (data.replacedIn.includes(num)) color = '#ff6666';
-            else if (data.replacedOut.includes(num)) color = '#66aaff';
-            else if (data.survivors.includes(num) && !data.basket.includes(num)) color = '#aaa';
-            return `<span style="display:inline-block; padding:0 3px; font-size:14px; font-weight:bold; color:${color};">${num}</span>`;
+            if (winSet.has(num)) return `<span style="display:inline-block; padding:0 3px; font-size:14px; font-weight:bold; color:#00ff00;">${num}</span>`;
+            if (data.replacedIn.includes(num)) return `<span style="display:inline-block; padding:0 3px; font-size:14px; font-weight:bold; color:#ff6666;">${num}</span>`;
+            if (data.replacedOut.includes(num)) return `<span style="display:inline-block; padding:0 3px; font-size:14px; font-weight:bold; color:#66aaff;">${num}</span>`;
+            if (data.survivors.includes(num) && !data.basket.includes(num)) 
+                return `<span style="display:inline-block; padding:0 3px; font-size:14px; font-weight:bold; color:#aaa;">${num}</span>`;
+            return `<span style="display:inline-block; padding:0 3px; font-size:14px; font-weight:bold; color:#fff;">${num}</span>`;
         };
 
-        // 1. 생존자 번호
         let survivorsHtml = data.survivors.map(n => formatNumber(n)).join(' ');
 
-        // 2. 보너스로 나온 수
         let bonusListHtml = '';
         if (data.allBonus && data.allBonus.length > 0) {
             const uniqueBonus = [...new Set(data.allBonus)].sort((a,b)=>a-b);
@@ -985,16 +1187,9 @@
             `;
         }
 
-        // 3. B 바구니
         let middleBagHtml = data.middleBag.length ? data.middleBag.map(n => formatNumber(n)).join(' ') : '없음';
-
-        // 4. 교체된 번호
         let replacedInHtml = data.replacedIn.length ? data.replacedIn.map(n => formatNumber(n)).join(' ') : '없음';
-
-        // 5. 교체당한 번호
         let replacedOutHtml = data.replacedOut.length ? data.replacedOut.map(n => formatNumber(n)).join(' ') : '없음';
-
-        // 6. 추천 10수
         let basketHtml = data.basket.map(n => formatNumber(n)).join(' ');
 
         let winningHtml = '';
@@ -1002,9 +1197,9 @@
             winningHtml = `
                 <div style="margin:5px 0; padding:4px; background:#222; border-radius:6px;">
                     <span class="highlight-gold" style="font-size:14px;">📌 ${data.targetRound}회 당첨번호:</span> 
-                    ${data.winningNums.map(n => `<span style="color:#ffd700; font-size:16px; font-weight:bold;">${n}</span>`).join(' ')}
+                    ${data.winningNums.map(n => `<span style="color:#00ff00; font-size:16px; font-weight:bold;">${n}</span>`).join(' ')}
                     <span class="bonus-label" style="font-size:11px;">보너스</span>
-                    <span style="color:#ffd700; font-size:16px; font-weight:bold;">${data.bonusNum}</span>
+                    <span style="color:#00ff00; font-size:16px; font-weight:bold;">${data.bonusNum}</span>
                 </div>
             `;
         }
@@ -1014,49 +1209,55 @@
                 <div style="text-align:center; margin-bottom:5px; color:var(--accent); font-weight:bold; font-size:15px;">📊 ${data.range}</div>
                 ${winningHtml}
                 
-                <!-- 1. 생존자 번호 -->
                 <div style="margin:3px 0;">
                     <span style="color:var(--accent); font-weight:bold; font-size:13px;">👥 생존자 번호:</span>
                     <div style="font-size:15px; margin-top:1px;">${survivorsHtml}</div>
                 </div>
 
-                <!-- 2. 보너스로 나온 수 -->
                 ${bonusListHtml}
 
-                <!-- 3. B 바구니 -->
                 <div style="margin:3px 0;">
                     <span style="color:#aaa; font-weight:bold; font-size:13px;">📦 B 바구니:</span>
-                    <div style="font-size:15px; margin-top:1px; color:#aaa;">${middleBagHtml}</div>
+                    <div style="font-size:15px; margin-top:1px;">${middleBagHtml}</div>
                 </div>
 
-                <!-- 4. 교체된 번호 -->
                 <div style="margin:3px 0;">
                     <span style="color:#ff6666; font-weight:bold; font-size:13px;">▶ 교체된 번호:</span>
-                    <div style="font-size:15px; margin-top:1px; color:#ff6666;">${replacedInHtml}</div>
+                    <div style="font-size:15px; margin-top:1px;">${replacedInHtml}</div>
                 </div>
 
-                <!-- 5. 교체당한 번호 -->
                 <div style="margin:3px 0;">
                     <span style="color:#66aaff; font-weight:bold; font-size:13px;">◀ 교체당한 번호:</span>
-                    <div style="font-size:15px; margin-top:1px; color:#66aaff;">${replacedOutHtml}</div>
+                    <div style="font-size:15px; margin-top:1px;">${replacedOutHtml}</div>
                 </div>
 
-                <!-- 6. 추천 10수 -->
                 <div style="margin:3px 0;">
-                    <span style="color:var(--gold); font-weight:bold; font-size:13px;">⭐ 추천 10수:</span>
-                    <div style="font-size:17px; margin-top:1px; color:var(--gold);">${basketHtml}</div>
+                    <span style="color:var(--gold); font-weight:bold; font-size:13px;">⭐ 추천 ${data.basket.length}수:</span>
+                    <div style="font-size:17px; margin-top:1px;">${basketHtml}</div>
                 </div>
 
             </div>
             <div style="display:flex; gap:8px; justify-content:center; margin-top:8px;">
+                <button class="game-btn" onclick="applyIntegratedResult()">✅ 결과 적용</button>
                 <button class="game-btn" onclick="this.closest('.popup-overlay').remove()">닫기</button>
             </div>
         `;
 
-        const popup = document.createElement('div'); popup.className = 'popup-overlay';
+        const popup = document.createElement('div'); 
+        popup.className = 'popup-overlay';
         popup.innerHTML = `<div class="popup-content" style="max-width:450px;">${html}</div>`;
         document.body.appendChild(popup);
         popup.addEventListener('click', e => { if (e.target === popup) popup.remove(); });
+    }
+
+    function applyIntegratedResult() {
+        if (!lastIntegratedResult) {
+            showToast('적용할 통합 분석 결과가 없습니다.');
+            return;
+        }
+        showToast('통합 분석 결과가 적용되었습니다.');
+        const popup = document.querySelector('.popup-overlay');
+        if (popup) popup.remove();
     }
 
     // ===== 복기 팝업 =====
@@ -1074,6 +1275,7 @@
         }
         popup.style.display = 'flex';
     }
+    
     function closeReviewPopup() { document.getElementById('reviewPopup').style.display = 'none'; }
 
     function compareNumbers() {
@@ -1111,6 +1313,7 @@
     // ===== 게임센터 =====
     function openGamePopup() { document.getElementById('gamePopup').style.display = 'flex'; setTimeout(initTouchCanvas, 100); }
     function closeGamePopup() { document.getElementById('gamePopup').style.display = 'none'; if (reactionTimer) clearTimeout(reactionTimer); reactionState = 'idle'; }
+    
     function switchGame(game) {
         document.querySelectorAll('.game-tab, .game-panel').forEach(el => el.classList.remove('active'));
         document.querySelector(`.game-tab[data-game="${game}"]`).classList.add('active');
@@ -1126,6 +1329,7 @@
         canvas.addEventListener('click', handleCanvasClick);
         canvas.addEventListener('touchstart', handleCanvasTouch, { passive: false });
     }
+    
     function drawNumbers() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cols = 7, cellSize = canvas.width / cols;
@@ -1146,12 +1350,14 @@
         document.getElementById('selectedNumbersContainer').innerHTML = touchSelected.map(n => `<span class="selected-ball">${n}</span>`).join('');
         document.getElementById('saveComboBtn').disabled = touchSelected.length !== 6;
     }
+    
     function handleCanvasClick(e) {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
         const mouseX = (e.clientX - rect.left) * scaleX, mouseY = (e.clientY - rect.top) * scaleY;
         pickNumberFromCoord(mouseX, mouseY);
     }
+    
     function handleCanvasTouch(e) {
         e.preventDefault();
         const rect = canvas.getBoundingClientRect();
@@ -1160,19 +1366,23 @@
         const touchX = (touch.clientX - rect.left) * scaleX, touchY = (touch.clientY - rect.top) * scaleY;
         pickNumberFromCoord(touchX, touchY);
     }
+    
     function pickNumberFromCoord(x, y) {
         const cols = 7, cellSize = canvas.width / cols;
         const col = Math.floor(x / cellSize), row = Math.floor(y / cellSize);
         const num = row * cols + col + 1;
         if (num >= 1 && num <= 45) toggleSelectNumber(num);
     }
+    
     function toggleSelectNumber(num) {
         const idx = touchSelected.indexOf(num);
         if (idx === -1) { if (touchSelected.length < 6) touchSelected.push(num); }
         else touchSelected.splice(idx, 1);
         drawNumbers();
     }
+    
     function resetTouchGame() { touchSelected = []; drawNumbers(); }
+    
     function saveTouchCombo() {
         if (touchSelected.length === 6) {
             saveToBox(touchSelected.sort((a,b)=>a-b).join(','));
@@ -1189,6 +1399,7 @@
             reactionState = 'ready'; reactionStartTime = Date.now();
         }, Math.random() * 3000 + 1000);
     }
+    
     function handleReactionClick() {
         const box = document.getElementById('reactionBox');
         const result = document.getElementById('reactionResult');
@@ -1212,6 +1423,7 @@
             box.innerText = '시작하려면 누르세요';
         }
     }
+    
     function resetReactionGame() {
         if (reactionTimer) clearTimeout(reactionTimer);
         reactionState = 'idle';
@@ -1222,6 +1434,7 @@
         document.getElementById('reactionSelectedContainer').innerHTML = '';
         document.getElementById('saveReactionBtn').disabled = true;
     }
+    
     function saveReactionCombo() {
         if (reactionSelected.length === 6) {
             saveToBox(reactionSelected.sort((a,b)=>a-b).join(','));
@@ -1229,7 +1442,7 @@
         }
     }
 
-    // ===== 전략 조합 (10조합 생성) =====
+    // ===== 전략 조합 =====
     function generateStrategicFromCurrent() {
         if (basket.length === 0) { alert('분석 데이터가 없습니다.'); return; }
         const targetNumbers = basket.slice(0, 5);
@@ -1294,11 +1507,13 @@
         `;
         document.body.appendChild(popup);
     }
+    
     window.saveStrategicCombo = function(key) { saveToBox(key); };
 
     // ===== 기타 =====
     function openPopup() { renderStorage(); document.getElementById('popup').style.display = 'flex'; }
     function closePopup() { document.getElementById('popup').style.display = 'none'; }
+    
     function clearStorage() {
         if(confirm('모든 저장 조합을 삭제할까요?')) {
             savedNumbers = [];
@@ -1307,7 +1522,15 @@
         }
     }
 
-    window.onload = function() { initUser(); analyze(); };
+    window.onload = function() { 
+        initUser(); 
+        // 슬라이더 초기값 설정
+        document.getElementById('compressRange').value = currentCompress;
+        document.getElementById('compressValue').innerText = currentCompress;
+        document.getElementById('intervalWeeks').value = intervalWeeks;
+        document.getElementById('refCount').value = referenceCount;
+        analyze(); 
+    };
 </script>
 </body>
 </html>
