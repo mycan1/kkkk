@@ -2,54 +2,71 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>분야별 통합 교집합 분석기</title>
+    <title>📊 고급 교집합 분석 시스템 (v2.0)</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             background: #0a0a0a; 
             color: #fff; 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif; 
             padding: 20px; 
-            max-width: 800px; 
+            max-width: 1400px; 
             margin: 0 auto; 
         }
         h1 { 
             color: #ffd700; 
             text-align: center; 
             margin-bottom: 20px; 
-            font-size: 24px; 
-            border-bottom: 2px solid #ffd700; 
+            font-size: 28px; 
+            border-bottom: 3px solid #ffd700; 
             padding-bottom: 10px; 
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
         }
-        h2 { 
-            color: #ffd700; 
-            font-size: 18px; 
-            margin: 20px 0 10px; 
-            border-left: 5px solid #ffd700; 
-            padding-left: 10px; 
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
         }
-        h3 { 
-            color: #00e6b8; 
-            font-size: 16px; 
-            margin: 15px 0 5px; 
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
         }
+        
+        /* 입력 섹션 */
         .input-section {
             background: #1a1a1a;
-            border: 2px solid #ffd700;
-            border-radius: 15px;
+            border: 3px solid #ffd700;
+            border-radius: 20px;
             padding: 15px;
-            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(255,215,0,0.2);
+        }
+        .section-title {
+            color: #ffd700;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
         textarea {
             width: 100%;
-            height: 200px;
+            height: 300px;
             background: #2a2a2a;
             color: #fff;
-            border: 1px solid #ffd700;
-            border-radius: 10px;
-            padding: 10px;
-            font-size: 12px;
-            font-family: monospace;
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 13px;
+            font-family: 'Consolas', monospace;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
             margin-bottom: 10px;
         }
         button {
@@ -57,111 +74,234 @@
             color: #000;
             border: none;
             border-radius: 30px;
-            padding: 10px 20px;
+            padding: 10px 5px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
-            margin-right: 5px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
         }
         button:hover {
             background: #00e6b8;
+            transform: scale(1.02);
+            box-shadow: 0 0 15px #00e6b8;
         }
-        .result-section {
-            background: #1a1a1a;
-            border: 2px solid #ffd700;
-            border-radius: 15px;
-            padding: 15px;
-            min-height: 300px;
-        }
-        .group-box {
-            background: #2a2a2a;
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-left: 5px solid #ffd700;
-        }
-        .group-title {
+        button.secondary {
+            background: #333;
             color: #ffd700;
-            font-weight: bold;
-            margin-bottom: 5px;
+            border: 1px solid #ffd700;
         }
-        .numbers {
+        button.secondary:hover {
+            background: #444;
+            color: #00e6b8;
+            border-color: #00e6b8;
+        }
+        
+        /* 필터 패널 */
+        .filter-panel {
+            background: #222;
+            border-radius: 15px;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ffd700;
+        }
+        .filter-group {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
+            gap: 10px;
+            margin: 8px 0;
         }
-        .number-ball {
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: #333;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        .filter-item input[type="number"] {
+            width: 50px;
+            background: #444;
+            border: 1px solid #ffd700;
+            color: #ffd700;
+            border-radius: 15px;
+            padding: 3px 5px;
+            text-align: center;
+        }
+        
+        /* 결과 영역 */
+        .result-section {
+            background: #1a1a1a;
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 15px;
+            min-height: 600px;
+            box-shadow: 0 0 20px rgba(255,215,0,0.2);
+        }
+        
+        /* 탭 메뉴 */
+        .tab-menu {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ffd700;
+            padding-bottom: 5px;
+        }
+        .tab {
+            padding: 8px 15px;
+            background: #333;
+            color: #aaa;
+            border-radius: 30px 30px 0 0;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .tab.active {
+            background: #ffd700;
+            color: #000;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* 통계 카드 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .stat-card {
+            background: linear-gradient(145deg, #222, #111);
+            border: 1px solid #ffd700;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 10px #ffd700;
+        }
+        .stat-label {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 5px;
+        }
+        
+        /* 그룹 카드 */
+        .groups-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+        .group-card {
+            background: #222;
+            border-left: 5px solid #ffd700;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 11px;
+            color: #ffd700;
+        }
+        .group-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+        .number-badge {
             display: inline-flex;
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 24px;
             background: #333;
             border: 1px solid #ffd700;
             border-radius: 50%;
             justify-content: center;
             align-items: center;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: bold;
         }
-        .gold-badge {
-            background: #ffd700;
-            color: #000;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-left: 5px;
-            font-size: 11px;
-        }
-        .green-badge {
-            background: #2ecc71;
-            color: #000;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-left: 5px;
-            font-size: 11px;
-        }
-        .blue-badge {
-            background: #3498db;
-            color: #fff;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-left: 5px;
-            font-size: 11px;
-        }
-        .rank-table {
+        
+        /* 분석 테이블 */
+        .analysis-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
+            font-size: 12px;
         }
-        .rank-table th {
+        .analysis-table th {
             background: #ffd700;
             color: #000;
-            padding: 8px;
-            font-size: 12px;
+            padding: 10px;
+            position: sticky;
+            top: 0;
         }
-        .rank-table td {
+        .analysis-table td {
             padding: 8px;
             border-bottom: 1px solid #444;
-            font-size: 12px;
         }
-        .rank-1 { background: #ffd70033; }
-        .rank-2 { background: #2ecc7133; }
-        .rank-3 { background: #3498db33; }
-        .final-recommend {
-            background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+        .analysis-table tr:hover {
+            background: #333;
+        }
+        .rank-1 { background: rgba(255,215,0,0.15); }
+        .rank-2 { background: rgba(46,204,113,0.15); }
+        .rank-3 { background: rgba(52,152,219,0.15); }
+        
+        /* 가중치 점수 */
+        .score-bar {
+            width: 100%;
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            margin-top: 3px;
+        }
+        .score-fill {
+            height: 100%;
+            background: #ffd700;
+            border-radius: 2px;
+        }
+        
+        /* 추천 박스 */
+        .recommend-box {
+            background: linear-gradient(145deg, #1a1a1a, #000);
             border: 3px solid #ffd700;
             border-radius: 20px;
-            padding: 15px;
+            padding: 20px;
             margin-top: 20px;
         }
-        .final-number {
+        .recommend-level {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .level-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        .level-1-badge { background: #ffd700; color: #000; }
+        .level-2-badge { background: #2ecc71; color: #000; }
+        .level-3-badge { background: #3498db; color: #fff; }
+        
+        .big-number {
             display: inline-flex;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             justify-content: center;
             align-items: center;
@@ -169,300 +309,958 @@
             font-size: 16px;
             margin: 3px;
             border: 2px solid white;
+            transition: transform 0.2s;
         }
-        .level-3 { background: #ffd700; color: #000; }
-        .level-2 { background: #2ecc71; color: #000; }
-        .level-1 { background: #3498db; color: #fff; }
+        .big-number:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px currentColor;
+        }
+        .big-number.level-1 { background: #ffd700; color: #000; }
+        .big-number.level-2 { background: #2ecc71; color: #000; }
+        .big-number.level-3 { background: #3498db; color: #fff; }
+        
+        /* 연관성 그래프 */
+        .correlation-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 2px;
+            margin: 10px 0;
+        }
+        .correlation-cell {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            font-size: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-shadow: 0 0 2px #000;
+        }
+        
+        /* 차트 */
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            margin: 20px 0;
+        }
+        .chart-bar {
+            flex: 1;
+            background: #ffd700;
+            min-height: 2px;
+            border-radius: 3px 3px 0 0;
+            transition: height 0.3s;
+            position: relative;
+        }
+        .chart-bar:hover::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #ffd700;
+            padding: 2px 5px;
+            border-radius: 10px;
+            font-size: 9px;
+            white-space: nowrap;
+        }
+        
+        /* 로딩 */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #ffd700;
+            font-size: 14px;
+        }
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffd700;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <h1>📊 분야별 통합 교집합 분석기</h1>
+    <h1>📊 고급 교집합 분석 시스템 v2.0</h1>
     
-    <div class="input-section">
-        <h3>📋 데이터 붙여넣기</h3>
-        <textarea id="dataInput" placeholder="여기에 상태창 데이터를 붙여넣으세요...
+    <div class="main-container">
+        <!-- 왼쪽: 입력 섹션 -->
+        <div class="input-section">
+            <div class="section-title">
+                <span>📋 데이터 입력</span>
+                <span style="font-size:10px; color:#aaa;">(어떤 형식이든 자동 분석)</span>
+            </div>
+            
+            <textarea id="dataInput" placeholder="여기에 데이터를 붙여넣으세요...
 
-예시:
-🤖AI
-3 7 12 18 21 25 30 35 40 (1)
-🤝교집합 (0)
-합집합
-2 3 5 7 8 11 12 15 18 19 21 22 25 27 30 31 35 36 40 (4)
-⬆️AI→특수
-5 8 11
-⬇️특수→AI
-18 21 25
-❌유실
-1 4 6 9 13 17
-🔷추천
-3 7 12 15 18 19 21 22 25 27 30 31 35 40 (4)"></textarea>
-        <button onclick="analyzeData()">🔍 분석하기</button>
-        <button onclick="clearData()">🗑️ 지우기</button>
-        <button onclick="copyResult()">📋 결과 복사</button>
-    </div>
+예시 1 (일반):
+🤖AI: 3 7 12 18 21 25 30 35 40 42
+전문가A: 5,8,11,18,21,25,33,38
+전문가B: 1,4,6,9,13,17,30,35,40
+추천시스템: 3 7 12 15 18 19 21 22 25 27 30
 
-    <div class="result-section" id="resultArea">
-        <h3 style="color:#ffd700; text-align:center;">👉 데이터를 붙여넣고 분석하기를 눌러주세요</h3>
+예시 2 (숫자만):
+3 7 12 18 21 25 30 35 40
+5 8 11 18 21 25 33 38
+1 4 6 9 13 17 30 35 40
+3 7 12 15 18 19 21 22 25 27 30
+
+예시 3 (상세):
+[AI 분석] 3,7,12,18,21,25,30,35,40,42
+[통계] 5,8,11,18,21,25,33,38
+[패턴] 1,4,6,9,13,17,30,35,40
+[최종] 3,7,12,15,18,19,21,22,25,27,30"></textarea>
+            
+            <div class="button-grid">
+                <button onclick="analyzeData()">🔍 고급 분석</button>
+                <button onclick="clearData()" class="secondary">🗑️ 지우기</button>
+                <button onclick="showSample()" class="secondary">📌 샘플</button>
+                <button onclick="exportData()" class="secondary">💾 내보내기</button>
+                <button onclick="copyResult()" class="secondary">📋 복사</button>
+                <button onclick="printReport()" class="secondary">🖨️ 인쇄</button>
+            </div>
+            
+            <div class="filter-panel">
+                <div style="color:#ffd700; margin-bottom:8px;">⚙️ 분석 옵션</div>
+                
+                <div class="filter-group">
+                    <div class="filter-item">
+                        <span>최소 그룹 수</span>
+                        <input type="number" id="minGroups" value="2" min="1" max="10">
+                    </div>
+                    <div class="filter-item">
+                        <span>최대 추천 개수</span>
+                        <input type="number" id="maxRecommend" value="20" min="5" max="45">
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-item">
+                        <input type="checkbox" id="weightBySize" checked> 그룹 크기 가중치
+                    </label>
+                    <label class="filter-item">
+                        <input type="checkbox" id="showCorrelation" checked> 연관성 분석
+                    </label>
+                    <label class="filter-item">
+                        <input type="checkbox" id="showChart" checked> 분포 차트
+                    </label>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-item">
+                        <input type="radio" name="sortMethod" id="sortByCount" checked> 그룹 수 순
+                    </label>
+                    <label class="filter-item">
+                        <input type="radio" name="sortMethod" id="sortByScore"> 종합 점수 순
+                    </label>
+                    <label class="filter-item">
+                        <input type="radio" name="sortMethod" id="sortByNumber"> 숫자 순
+                    </label>
+                </div>
+            </div>
+            
+            <div style="font-size:10px; color:#666; text-align:center;">
+                Ctrl+Enter 로 빠른 분석 | 우클릭 붙여넣기 지원
+            </div>
+        </div>
+        
+        <!-- 오른쪽: 결과 섹션 (탭 구성) -->
+        <div class="result-section">
+            <div class="tab-menu">
+                <div class="tab active" onclick="switchTab('overview')">📊 종합</div>
+                <div class="tab" onclick="switchTab('analysis')">🔍 상세분석</div>
+                <div class="tab" onclick="switchTab('groups')">📦 그룹별</div>
+                <div class="tab" onclick="switchTab('correlation')">🔄 연관성</div>
+                <div class="tab" onclick="switchTab('stats')">📈 통계</div>
+            </div>
+            
+            <!-- 종합 탭 -->
+            <div id="tab-overview" class="tab-content active">
+                <div id="overview-content">
+                    <div class="loading">분석을 시작하려면 데이터를 입력하세요</div>
+                </div>
+            </div>
+            
+            <!-- 상세분석 탭 -->
+            <div id="tab-analysis" class="tab-content">
+                <div id="analysis-content"></div>
+            </div>
+            
+            <!-- 그룹별 탭 -->
+            <div id="tab-groups" class="tab-content">
+                <div id="groups-content"></div>
+            </div>
+            
+            <!-- 연관성 탭 -->
+            <div id="tab-correlation" class="tab-content">
+                <div id="correlation-content"></div>
+            </div>
+            
+            <!-- 통계 탭 -->
+            <div id="tab-stats" class="tab-content">
+                <div id="stats-content"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        function parseNumbers(text) {
-            if (!text) return [];
+        // ========== 고급 분석 엔진 ==========
+        
+        let currentAnalysis = null;
+        let currentGroups = null;
+        
+        // 탭 전환
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
             
-            // 괄호 안의 당첨개수 제거
-            text = text.replace(/\(\d+\)/g, '');
-            
-            // 숫자만 추출 (공백, 쉼표 모두 처리)
-            let numbers = [];
-            let matches = text.match(/\d+/g);
-            if (matches) {
-                numbers = matches.map(Number);
+            if (currentAnalysis && currentGroups) {
+                renderTabContent(tab);
             }
-            return numbers;
         }
-
-        function extractGroups(inputText) {
-            let lines = inputText.split('\n');
+        
+        // 데이터 파싱 (고급)
+        function parseAdvancedData(text) {
+            if (!text.trim()) return null;
+            
+            let lines = text.split('\n');
             let groups = {};
-            let currentGroup = null;
-            let currentText = '';
+            let currentGroup = '기본그룹';
+            let currentNumbers = [];
+            
+            // 그룹 패턴 인식 (향상)
+            const groupPatterns = [
+                /^[\[\(]?([^0-9\s\[\]\(\)]{2,})[\]\)]?\s*[:：\-–—]?\s*$/,
+                /^([ㄱ-힣A-Za-z]{2,})\s*[:：\-–—]?\s*$/,
+                /^[🤖🎯🔷❌⬆️⬇️📊📈]([^0-9]+)/
+            ];
             
             for (let line of lines) {
                 line = line.trim();
                 if (!line) continue;
                 
+                // 숫자 추출
+                let numbers = line.match(/\d+/g)?.map(Number) || [];
+                
                 // 그룹 헤더 감지
-                if (line.match(/^🤖AI|^🤝교집합|^합집합|^⬆️AI→특수|^⬇️특수→AI|^❌유실|^🔷추천/)) {
+                let isGroupHeader = false;
+                let groupName = null;
+                
+                for (let pattern of groupPatterns) {
+                    let match = line.match(pattern);
+                    if (match && numbers.length === 0) {
+                        isGroupHeader = true;
+                        groupName = match[1] || match[0];
+                        break;
+                    }
+                }
+                
+                // 짧은 라인 + 숫자 있음 = 그룹 헤더 + 숫자
+                if (!isGroupHeader && line.length < 30 && numbers.length > 0 && line.replace(/[0-9\s,.]/g, '').length > 1) {
+                    let possibleName = line.replace(/[0-9\s,.]/g, '').trim();
+                    if (possibleName) {
+                        isGroupHeader = true;
+                        groupName = possibleName;
+                    }
+                }
+                
+                if (isGroupHeader && groupName) {
                     // 이전 그룹 저장
-                    if (currentGroup && currentText) {
-                        groups[currentGroup] = {
-                            raw: currentGroup,
-                            numbers: parseNumbers(currentText)
-                        };
+                    if (currentNumbers.length > 0) {
+                        if (!groups[currentGroup]) groups[currentGroup] = [];
+                        groups[currentGroup] = [...new Set([...groups[currentGroup], ...currentNumbers])];
                     }
                     
-                    // 새 그룹 시작
-                    let headerMatch = line.match(/^([^0-9(]+)/);
-                    if (headerMatch) {
-                        currentGroup = headerMatch[1].trim();
-                        currentText = line;
-                    }
-                } else if (currentGroup) {
-                    currentText += ' ' + line;
+                    currentGroup = groupName;
+                    currentNumbers = numbers;
+                } else {
+                    // 일반 라인 - 숫자 추가
+                    currentNumbers.push(...numbers);
                 }
             }
             
             // 마지막 그룹 저장
-            if (currentGroup && currentText) {
-                groups[currentGroup] = {
-                    raw: currentGroup,
-                    numbers: parseNumbers(currentText)
-                };
+            if (currentNumbers.length > 0) {
+                if (!groups[currentGroup]) groups[currentGroup] = [];
+                groups[currentGroup] = [...new Set([...groups[currentGroup], ...currentNumbers])];
             }
             
-            return groups;
+            // 그룹이 없으면 전체를 하나의 그룹으로
+            if (Object.keys(groups).length === 0) {
+                let allNumbers = text.match(/\d+/g)?.map(Number) || [];
+                if (allNumbers.length > 0) {
+                    groups['전체'] = [...new Set(allNumbers)];
+                }
+            }
+            
+            // 그룹명 정리
+            let cleanedGroups = {};
+            for (let [name, numbers] of Object.entries(groups)) {
+                let cleanName = name.replace(/[:：\-–—]\s*$/, '').trim();
+                if (cleanName.length > 20) cleanName = cleanName.substring(0, 20) + '...';
+                cleanedGroups[cleanName] = numbers;
+            }
+            
+            return cleanedGroups;
         }
-
-        function findIntersections(groups) {
-            let allNumbers = new Set();
-            let groupMap = {};
+        
+        // 가중치 점수 계산
+        function calculateWeights(groups) {
+            let weights = {};
+            let totalSize = 0;
+            
+            // 그룹 크기 기반 가중치
+            for (let [name, numbers] of Object.entries(groups)) {
+                weights[name] = numbers.length;
+                totalSize += numbers.length;
+            }
+            
+            // 정규화
+            if (totalSize > 0) {
+                for (let name in weights) {
+                    weights[name] = weights[name] / totalSize;
+                }
+            }
+            
+            return weights;
+        }
+        
+        // 종합 점수 계산
+        function calculateComprehensiveScore(number, groups, groupWeights, options) {
+            let groupCount = number.groups.length;
+            let baseScore = groupCount;
+            
+            // 그룹 크기 가중치 적용
+            if (options.weightBySize) {
+                let weightSum = number.groups.reduce((sum, g) => sum + (groupWeights[g] || 1), 0);
+                baseScore += weightSum * 2;
+            }
+            
+            // 그룹 다양성 점수 (서로 다른 성격의 그룹일수록 가산)
+            let diversityBonus = 0;
+            let groupTypes = new Set(number.groups.map(g => {
+                if (g.includes('AI') || g.includes('인공지능')) return 'ai';
+                if (g.includes('통계') || g.includes('분석')) return 'stat';
+                if (g.includes('전문가') || g.includes('전문')) return 'expert';
+                if (g.includes('추천') || g.includes('최종')) return 'recommend';
+                return 'other';
+            })).size;
+            diversityBonus = (groupTypes - 1) * 0.5;
+            
+            // 인기도 점수 (여러 그룹에 등장)
+            let frequencyScore = groupCount / Object.keys(groups).length * 3;
+            
+            return baseScore + diversityBonus + frequencyScore;
+        }
+        
+        // 연관성 분석
+        function analyzeCorrelation(groups) {
+            let numbers = new Set();
+            let pairs = {};
             
             // 모든 숫자 수집
-            for (let [groupName, data] of Object.entries(groups)) {
-                groupMap[groupName] = data.numbers;
-                data.numbers.forEach(n => allNumbers.add(n));
+            for (let nums of Object.values(groups)) {
+                nums.forEach(n => numbers.add(n));
             }
             
-            // 각 숫자가 속한 그룹 찾기
-            let intersections = [];
-            let groupNames = Object.keys(groups);
+            let numList = Array.from(numbers).sort((a,b) => a-b);
             
-            for (let num of Array.from(allNumbers).sort((a,b) => a-b)) {
-                let belongsTo = [];
-                for (let group of groupNames) {
-                    if (groupMap[group].includes(num)) {
-                        belongsTo.push(group);
+            // 동시 등장 빈도 계산
+            for (let i = 0; i < numList.length; i++) {
+                for (let j = i+1; j < numList.length; j++) {
+                    let a = numList[i], b = numList[j];
+                    let count = 0;
+                    
+                    for (let nums of Object.values(groups)) {
+                        if (nums.includes(a) && nums.includes(b)) {
+                            count++;
+                        }
+                    }
+                    
+                    if (count > 0) {
+                        pairs[`${a},${b}`] = count;
                     }
                 }
-                if (belongsTo.length >= 2) { // 2개 이상 그룹에 속한 숫자만
-                    intersections.push({
-                        number: num,
-                        groups: belongsTo,
-                        count: belongsTo.length
-                    });
-                }
             }
             
-            // 그룹 수 기준 내림차순 정렬
-            intersections.sort((a,b) => b.count - a.count);
-            
-            return intersections;
+            return { numbers: numList, pairs };
         }
-
+        
+        // 메인 분석 함수
         function analyzeData() {
             let input = document.getElementById('dataInput').value;
             if (!input.trim()) {
-                alert('데이터를 붙여넣어주세요!');
+                alert('데이터를 입력해주세요!');
                 return;
             }
             
-            let groups = extractGroups(input);
-            let intersections = findIntersections(groups);
+            // 로딩 표시
+            document.getElementById('overview-content').innerHTML = '<div class="loading">분석 중...</div>';
             
-            // 결과 HTML 생성
-            let html = '';
-            
-            // 1. 입력된 그룹 표시
-            html += '<h2>📦 입력된 그룹</h2>';
-            for (let [name, data] of Object.entries(groups)) {
-                html += `<div class="group-box">`;
-                html += `<div class="group-title">${name} <span class="gold-badge">${data.numbers.length}개</span></div>`;
-                html += `<div class="numbers">`;
-                data.numbers.forEach(n => {
-                    html += `<span class="number-ball">${n}</span>`;
-                });
-                html += `</div></div>`;
-            }
-            
-            // 2. 분야별 교집합 분석
-            html += '<h2>🔍 분야별 통합 교집합</h2>';
-            
-            // 3개 이상 그룹 교집합
-            let tripleIntersection = intersections.filter(x => x.count >= 3);
-            if (tripleIntersection.length > 0) {
-                html += '<h3>🥇 3개 이상 그룹 교집합 (최상위) <span class="green-badge">⭐ 핵심</span></h3>';
-                html += '<table class="rank-table">';
-                html += '<tr><th>숫자</th><th>포함된 그룹</th><th>그룹 수</th></tr>';
-                tripleIntersection.forEach(item => {
-                    html += `<tr class="rank-1">`;
-                    html += `<td><strong style="font-size:16px;">${item.number}</strong></td>`;
-                    html += `<td>${item.groups.join(' + ')}</td>`;
-                    html += `<td>${item.count}</td>`;
-                    html += `</tr>`;
-                });
-                html += '</table>';
-            }
-            
-            // 2개 그룹 교집합
-            let doubleIntersection = intersections.filter(x => x.count === 2);
-            if (doubleIntersection.length > 0) {
-                html += '<h3>🥈 2개 그룹 교집합</h3>';
-                html += '<table class="rank-table">';
-                html += '<tr><th>숫자</th><th>포함된 그룹</th></tr>';
-                doubleIntersection.forEach(item => {
-                    html += `<tr class="rank-2">`;
-                    html += `<td><strong>${item.number}</strong></td>`;
-                    html += `<td>${item.groups.join(' + ')}</td>`;
-                    html += `</tr>`;
-                });
-                html += '</table>';
-            }
-            
-            // 3. 숫자별 그룹 포함 관계
-            html += '<h2>📊 숫자별 그룹 포함 관계</h2>';
-            
-            let allNumbers = [];
-            for (let [name, data] of Object.entries(groups)) {
-                data.numbers.forEach(n => {
-                    let existing = allNumbers.find(x => x.num === n);
-                    if (existing) {
-                        existing.groups.push(name);
-                    } else {
-                        allNumbers.push({num: n, groups: [name]});
+            setTimeout(() => {
+                try {
+                    // 1. 그룹 파싱
+                    let groups = parseAdvancedData(input);
+                    if (!groups || Object.keys(groups).length === 0) {
+                        alert('분석할 숫자를 찾을 수 없습니다.');
+                        return;
                     }
+                    
+                    currentGroups = groups;
+                    
+                    // 2. 옵션 읽기
+                    let options = {
+                        minGroups: parseInt(document.getElementById('minGroups').value) || 2,
+                        maxRecommend: parseInt(document.getElementById('maxRecommend').value) || 20,
+                        weightBySize: document.getElementById('weightBySize').checked,
+                        showCorrelation: document.getElementById('showCorrelation').checked,
+                        showChart: document.getElementById('showChart').checked,
+                        sortMethod: document.querySelector('input[name="sortMethod"]:checked')?.id || 'sortByCount'
+                    };
+                    
+                    // 3. 가중치 계산
+                    let groupWeights = calculateWeights(groups);
+                    
+                    // 4. 숫자별 그룹 분석
+                    let numberGroups = {};
+                    for (let [groupName, numbers] of Object.entries(groups)) {
+                        numbers.forEach(n => {
+                            if (!numberGroups[n]) numberGroups[n] = [];
+                            numberGroups[n].push(groupName);
+                        });
+                    }
+                    
+                    // 5. 분석 데이터 생성
+                    let analysis = [];
+                    for (let [num, grps] of Object.entries(numberGroups)) {
+                        let uniqueGroups = [...new Set(grps)];
+                        analysis.push({
+                            number: parseInt(num),
+                            groups: uniqueGroups,
+                            count: uniqueGroups.length,
+                            score: calculateComprehensiveScore(
+                                {number: parseInt(num), groups: uniqueGroups}, 
+                                groups, 
+                                groupWeights, 
+                                options
+                            )
+                        });
+                    }
+                    
+                    // 6. 정렬
+                    if (options.sortMethod === 'sortByCount') {
+                        analysis.sort((a, b) => {
+                            if (a.count !== b.count) return b.count - a.count;
+                            return b.score - a.score;
+                        });
+                    } else if (options.sortMethod === 'sortByScore') {
+                        analysis.sort((a, b) => b.score - a.score);
+                    } else {
+                        analysis.sort((a, b) => a.number - b.number);
+                    }
+                    
+                    // 7. 연관성 분석
+                    let correlation = analyzeCorrelation(groups);
+                    
+                    // 8. 통계 계산
+                    let stats = {
+                        totalGroups: Object.keys(groups).length,
+                        totalNumbers: analysis.length,
+                        maxGroupCount: Math.max(...analysis.map(a => a.count)),
+                        avgGroupCount: (analysis.reduce((sum, a) => sum + a.count, 0) / analysis.length).toFixed(2),
+                        groupSizes: Object.fromEntries(
+                            Object.entries(groups).map(([k,v]) => [k, v.length])
+                        )
+                    };
+                    
+                    // 9. 결과 저장
+                    currentAnalysis = {
+                        groups,
+                        analysis,
+                        correlation,
+                        stats,
+                        options
+                    };
+                    
+                    // 10. 탭 렌더링
+                    renderTabContent('overview');
+                    
+                } catch (error) {
+                    console.error(error);
+                    alert('분석 중 오류가 발생했습니다: ' + error.message);
+                }
+            }, 100);
+        }
+        
+        // 탭 컨텐츠 렌더링
+        function renderTabContent(tab) {
+            if (!currentAnalysis) return;
+            
+            switch(tab) {
+                case 'overview':
+                    renderOverview();
+                    break;
+                case 'analysis':
+                    renderAnalysis();
+                    break;
+                case 'groups':
+                    renderGroups();
+                    break;
+                case 'correlation':
+                    renderCorrelation();
+                    break;
+                case 'stats':
+                    renderStats();
+                    break;
+            }
+        }
+        
+        // 종합 탭
+        function renderOverview() {
+            let { analysis, groups, stats, correlation, options } = currentAnalysis;
+            
+            let level1 = analysis.filter(a => a.count >= 3);
+            let level2 = analysis.filter(a => a.count === 2);
+            let level3 = analysis.filter(a => a.count === 1);
+            
+            let html = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalGroups}</div>
+                        <div class="stat-label">전체 그룹</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalNumbers}</div>
+                        <div class="stat-label">분석 숫자</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${level1.length}</div>
+                        <div class="stat-label">3+ 그룹</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${level2.length}</div>
+                        <div class="stat-label">2개 그룹</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.maxGroupCount}</div>
+                        <div class="stat-label">최대 그룹 수</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.avgGroupCount}</div>
+                        <div class="stat-label">평균 그룹 수</div>
+                    </div>
+                </div>
+            `;
+            
+            // 분포 차트
+            if (options.showChart) {
+                let maxCount = Math.max(...analysis.map(a => a.count));
+                let buckets = {};
+                analysis.forEach(a => {
+                    buckets[a.count] = (buckets[a.count] || 0) + 1;
                 });
+                
+                html += '<div style="margin:20px 0;">';
+                html += '<div style="color:#ffd700; margin-bottom:5px;">📊 그룹 수 분포</div>';
+                html += '<div class="chart-container">';
+                
+                for (let i = 1; i <= stats.maxGroupCount; i++) {
+                    let count = buckets[i] || 0;
+                    let height = (count / analysis.length) * 180;
+                    html += `<div class="chart-bar" style="height:${height}px;" data-value="${i}개 그룹: ${count}개 숫자"></div>`;
+                }
+                
+                html += '</div>';
+                html += '<div style="display:flex; justify-content:space-between; font-size:9px; color:#666;">';
+                for (let i = 1; i <= stats.maxGroupCount; i++) {
+                    html += `<span>${i}</span>`;
+                }
+                html += '</div></div>';
             }
             
-            allNumbers.sort((a,b) => a.num - b.num);
+            // 최종 추천
+            html += '<div class="recommend-box">';
+            html += '<h3 style="color:#ffd700; margin-bottom:15px;">🎯 종합 추천 순위</h3>';
             
-            html += '<div style="max-height:300px; overflow-y:auto;">';
-            html += '<table class="rank-table">';
-            html += '<tr><th>숫자</th><th>포함된 그룹</th><th>개수</th></tr>';
-            allNumbers.forEach(item => {
-                let rowClass = '';
-                if (item.groups.length >= 3) rowClass = 'rank-1';
-                else if (item.groups.length === 2) rowClass = 'rank-2';
-                else rowClass = 'rank-3';
-                
-                html += `<tr class="${rowClass}">`;
-                html += `<td><strong>${item.num}</strong></td>`;
-                html += `<td>${item.groups.join(', ')}</td>`;
-                html += `<td>${item.groups.length}</td>`;
-                html += `</tr>`;
-            });
-            html += '</table></div>';
+            let displayCount = Math.min(options.maxRecommend, analysis.length);
             
-            // 4. 🎯 최종 추천 숫자 (우선순위별)
-            html += '<div class="final-recommend">';
-            html += '<h2 style="margin-top:0; color:#ffd700; text-align:center;">🎯 최종 추천 숫자 (우선순위)</h2>';
-            
-            if (intersections.length > 0) {
-                // 레벨별로 분류
-                let level3 = intersections.filter(x => x.count >= 3).map(x => x.number);
-                let level2 = intersections.filter(x => x.count === 2).map(x => x.number);
-                let level1 = intersections.filter(x => x.count === 1).map(x => x.number);
+            for (let i = 0; i < displayCount; i++) {
+                let item = analysis[i];
+                let levelClass = item.count >= 3 ? 'level-1' : (item.count === 2 ? 'level-2' : 'level-3');
+                let levelText = item.count >= 3 ? '⭐ 최우선' : (item.count === 2 ? '🔸 차순위' : '🔹 참고');
                 
-                // 3개 이상 그룹 (최우선)
-                if (level3.length > 0) {
-                    html += '<div style="margin: 15px 0;">';
-                    html += '<span class="gold-badge" style="font-size:14px;">⭐ 3개 이상 그룹 (최우선)</span>';
-                    html += '<div style="margin-top:10px;">';
-                    level3.forEach(n => {
-                        html += `<span class="final-number level-3">${n}</span>`;
-                    });
-                    html += '</div></div>';
-                }
-                
-                // 2개 그룹 (차순위)
-                if (level2.length > 0) {
-                    html += '<div style="margin: 15px 0;">';
-                    html += '<span class="green-badge" style="font-size:14px;">🔸 2개 그룹 (차순위)</span>';
-                    html += '<div style="margin-top:10px;">';
-                    level2.forEach(n => {
-                        html += `<span class="final-number level-2">${n}</span>`;
-                    });
-                    html += '</div></div>';
-                }
-                
-                // 1개 그룹 (참고용)
-                if (level1.length > 0) {
-                    html += '<div style="margin: 15px 0;">';
-                    html += '<span class="blue-badge" style="font-size:14px;">🔹 1개 그룹 (참고)</span>';
-                    html += '<div style="margin-top:10px;">';
-                    level1.forEach(n => {
-                        html += `<span class="final-number level-1">${n}</span>`;
-                    });
-                    html += '</div></div>';
-                }
-                
-                // 전체 추천 숫자 한눈에 보기
-                html += '<div style="margin-top:20px; padding-top:10px; border-top:1px solid #444;">';
-                html += '<span style="color:#ffd700;">📌 추천 우선순위: </span>';
-                html += '<span class="level-3" style="width:20px; height:20px; font-size:12px; display:inline-block;">⭐</span> 최우선 ';
-                html += '<span class="level-2" style="width:20px; height:20px; font-size:12px; display:inline-block;">🔸</span> 차순위 ';
-                html += '<span class="level-1" style="width:20px; height:20px; font-size:12px; display:inline-block;">🔹</span> 참고';
-                html += '</div>';
-                
-            } else {
-                html += '<p style="text-align:center;">교집합 숫자가 없습니다.</p>';
+                html += `
+                    <div style="display:flex; align-items:center; margin:5px 0; padding:5px; background:#222; border-radius:30px;">
+                        <span style="width:30px; text-align:center; font-weight:bold;">${i+1}</span>
+                        <span class="big-number ${levelClass}" style="width:35px; height:35px; font-size:14px;">${item.number}</span>
+                        <span style="width:60px; margin-left:10px; font-size:11px;">${levelText}</span>
+                        <div style="flex:1; margin-left:10px;">
+                            <div style="display:flex; gap:5px; font-size:10px; color:#aaa;">
+                                <span>📦 ${item.count}개 그룹</span>
+                                <span>📊 점수 ${item.score.toFixed(1)}</span>
+                            </div>
+                            <div class="score-bar">
+                                <div class="score-fill" style="width:${(item.score / 10) * 100}%;"></div>
+                            </div>
+                            <div style="font-size:8px; color:#666; margin-top:2px;">
+                                ${item.groups.join(' · ')}
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
             
             html += '</div>';
             
-            document.getElementById('resultArea').innerHTML = html;
+            document.getElementById('overview-content').innerHTML = html;
         }
         
+        // 상세분석 탭
+        function renderAnalysis() {
+            let { analysis, options } = currentAnalysis;
+            
+            let html = `
+                <table class="analysis-table">
+                    <tr>
+                        <th>순위</th>
+                        <th>숫자</th>
+                        <th>그룹 수</th>
+                        <th>종합 점수</th>
+                        <th>포함 그룹</th>
+                        <th>비중</th>
+                    </tr>
+            `;
+            
+            analysis.slice(0, 30).forEach((item, idx) => {
+                let rowClass = item.count >= 3 ? 'rank-1' : (item.count === 2 ? 'rank-2' : 'rank-3');
+                let percentage = ((item.count / currentAnalysis.stats.totalGroups) * 100).toFixed(1);
+                
+                html += `
+                    <tr class="${rowClass}">
+                        <td style="text-align:center;">${idx+1}</td>
+                        <td style="font-weight:bold; font-size:16px;">${item.number}</td>
+                        <td style="text-align:center;"><span class="level-badge" style="padding:2px 8px;">${item.count}</span></td>
+                        <td style="text-align:center;">${item.score.toFixed(2)}</td>
+                        <td style="max-width:200px;">${item.groups.join(', ')}</td>
+                        <td style="text-align:center;">${percentage}%</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</table>';
+            
+            document.getElementById('analysis-content').innerHTML = html;
+        }
+        
+        // 그룹별 탭
+        function renderGroups() {
+            let { groups, analysis } = currentAnalysis;
+            
+            let html = '<div class="groups-container">';
+            
+            for (let [name, numbers] of Object.entries(groups)) {
+                let sorted = numbers.sort((a,b) => a-b);
+                let groupStats = analysis.filter(a => sorted.includes(a.number));
+                let avgScore = (groupStats.reduce((sum, a) => sum + a.score, 0) / groupStats.length).toFixed(1);
+                let maxCount = Math.max(...groupStats.map(a => a.count));
+                
+                html += `
+                    <div class="group-card">
+                        <div class="group-header">
+                            <span>${name}</span>
+                            <span>${sorted.length}개</span>
+                        </div>
+                        <div class="group-numbers">
+                `;
+                
+                sorted.forEach(n => {
+                    let item = analysis.find(a => a.number === n);
+                    let highlight = item.count >= 3;
+                    html += `<span class="number-badge" style="${highlight ? 'background:#ffd700; color:#000;' : ''}">${n}</span>`;
+                });
+                
+                html += `
+                        </div>
+                        <div style="margin-top:5px; font-size:8px; color:#aaa;">
+                            평균 점수: ${avgScore} | 최대 그룹수: ${maxCount}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            
+            document.getElementById('groups-content').innerHTML = html;
+        }
+        
+        // 연관성 탭
+        function renderCorrelation() {
+            let { correlation, groups } = currentAnalysis;
+            let { numbers, pairs } = correlation;
+            
+            let html = '<h3 style="color:#ffd700;">🔄 숫자 간 연관성</h3>';
+            
+            // 상위 연관성
+            let topPairs = Object.entries(pairs)
+                .map(([key, count]) => ({ key, count, numbers: key.split(',').map(Number) }))
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 20);
+            
+            html += '<div style="margin:15px 0;">';
+            html += '<div style="color:#aaa; margin-bottom:5px;">🔝 가장 많이 함께 등장한 쌍</div>';
+            
+            topPairs.forEach(p => {
+                let percentage = ((p.count / Object.keys(groups).length) * 100).toFixed(1);
+                html += `
+                    <div style="display:flex; align-items:center; margin:5px 0; padding:5px; background:#222; border-radius:30px;">
+                        <span class="big-number level-1" style="width:30px; height:30px; font-size:12px;">${p.numbers[0]}</span>
+                        <span style="margin:0 5px;">↔</span>
+                        <span class="big-number level-2" style="width:30px; height:30px; font-size:12px;">${p.numbers[1]}</span>
+                        <div style="margin-left:10px; flex:1;">
+                            <div style="font-size:11px;">${p.count}개 그룹에서 동시 등장</div>
+                            <div class="score-bar"><div class="score-fill" style="width:${percentage}%;"></div></div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            // 연관성 히트맵
+            html += '<div style="margin-top:20px;">';
+            html += '<div style="color:#aaa; margin-bottom:5px;">🗺️ 연관성 히트맵 (상위 10개 숫자)</div>';
+            
+            let topNumbers = numbers.slice(0, 10);
+            
+            html += '<div style="overflow-x:auto;">';
+            html += '<table style="border-collapse:collapse;">';
+            
+            // 헤더
+            html += '<tr><th style="background:#333;"></th>';
+            topNumbers.forEach(n => html += `<th style="background:#333; padding:5px;">${n}</th>`);
+            html += '</tr>';
+            
+            // 데이터
+            for (let a of topNumbers) {
+                html += '<tr>';
+                html += `<th style="background:#333; padding:5px;">${a}</th>`;
+                for (let b of topNumbers) {
+                    if (a === b) {
+                        html += '<td style="background:#111;"></td>';
+                    } else {
+                        let key1 = `${Math.min(a,b)},${Math.max(a,b)}`;
+                        let key2 = `${Math.max(a,b)},${Math.min(a,b)}`;
+                        let count = pairs[key1] || pairs[key2] || 0;
+                        let intensity = Math.min(255, 100 + count * 30);
+                        html += `<td style="background:rgba(255,215,0,${count/10}); text-align:center; padding:5px; border:1px solid #333;">${count}</td>`;
+                    }
+                }
+                html += '</tr>';
+            }
+            
+            html += '</table></div></div>';
+            
+            document.getElementById('correlation-content').innerHTML = html;
+        }
+        
+        // 통계 탭
+        function renderStats() {
+            let { stats, groups, analysis } = currentAnalysis;
+            
+            let groupNames = Object.keys(groups);
+            let groupSizes = Object.values(stats.groupSizes);
+            
+            let html = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalGroups}</div>
+                        <div class="stat-label">전체 그룹</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.totalNumbers}</div>
+                        <div class="stat-label">고유 숫자</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${Math.max(...groupSizes)}</div>
+                        <div class="stat-label">최대 그룹 크기</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${Math.min(...groupSizes)}</div>
+                        <div class="stat-label">최소 그룹 크기</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${(groupSizes.reduce((a,b)=>a+b,0)/groupSizes.length).toFixed(1)}</div>
+                        <div class="stat-label">평균 그룹 크기</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${analysis.filter(a => a.count >= 3).length}</div>
+                        <div class="stat-label">핵심 숫자(3+그룹)</div>
+                    </div>
+                </div>
+            `;
+            
+            // 그룹 크기 분포
+            html += '<div style="margin:20px 0;">';
+            html += '<div style="color:#ffd700;">📊 그룹별 숫자 분포</div>';
+            
+            groupNames.forEach(name => {
+                let size = stats.groupSizes[name];
+                let percentage = (size / stats.totalNumbers * 100).toFixed(1);
+                html += `
+                    <div style="margin:5px 0;">
+                        <div style="display:flex; justify-content:space-between; font-size:11px;">
+                            <span>${name}</span>
+                            <span>${size}개 (${percentage}%)</span>
+                        </div>
+                        <div class="score-bar"><div class="score-fill" style="width:${percentage}%;"></div></div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            // 그룹 간 중복도 분석
+            html += '<div style="margin:20px 0;">';
+            html += '<div style="color:#ffd700;">🔄 그룹 간 중복도</div>';
+            
+            let overlapMatrix = [];
+            for (let i = 0; i < groupNames.length; i++) {
+                for (let j = i+1; j < groupNames.length; j++) {
+                    let set1 = new Set(groups[groupNames[i]]);
+                    let set2 = new Set(groups[groupNames[j]]);
+                    let overlap = [...set1].filter(x => set2.has(x)).length;
+                    let union = new Set([...set1, ...set2]).size;
+                    let jaccard = (overlap / union * 100).toFixed(1);
+                    
+                    if (overlap > 0) {
+                        overlapMatrix.push({
+                            g1: groupNames[i],
+                            g2: groupNames[j],
+                            overlap,
+                            jaccard
+                        });
+                    }
+                }
+            }
+            
+            overlapMatrix.sort((a,b) => b.overlap - a.overlap).slice(0, 10).forEach(item => {
+                html += `
+                    <div style="margin:5px 0; padding:5px; background:#222; border-radius:10px;">
+                        <div style="display:flex; justify-content:space-between; font-size:11px;">
+                            <span>${item.g1} ↔ ${item.g2}</span>
+                            <span>${item.overlap}개 중복 (${item.jaccard}%)</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            document.getElementById('stats-content').innerHTML = html;
+        }
+        
+        // 유틸리티 함수들
         function clearData() {
             document.getElementById('dataInput').value = '';
-            document.getElementById('resultArea').innerHTML = '<h3 style="color:#ffd700; text-align:center;">👉 데이터를 붙여넣고 분석하기를 눌러주세요</h3>';
+            currentAnalysis = null;
+            currentGroups = null;
+            document.getElementById('overview-content').innerHTML = '<div class="loading">분석을 시작하려면 데이터를 입력하세요</div>';
+            document.getElementById('analysis-content').innerHTML = '';
+            document.getElementById('groups-content').innerHTML = '';
+            document.getElementById('correlation-content').innerHTML = '';
+            document.getElementById('stats-content').innerHTML = '';
+        }
+        
+        function showSample() {
+            document.getElementById('dataInput').value = `🤖 AI 분석 (머신러닝)
+3 7 12 18 21 25 30 35 40 42 44
+
+📈 통계 기반 분석
+5 8 11 18 21 25 33 38 41 43
+
+🎯 전문가 A (패턴 분석)
+1 4 6 9 13 17 30 35 40 42 45
+
+🔷 통합 추천 시스템
+3 7 12 15 18 19 21 22 25 27 30 35 40
+
+⬆️ 상승 패턴
+5 8 11 18 21 25 33 38
+
+⬇️ 하락 패턴
+1 4 6 9 13 17 30 35
+
+❌ 제외 패턴
+2 10 14 16 20 23 24 26 28 29 31 32 34 36 37 39
+
+📊 최근 10회 출현
+7 12 18 21 25 30 35 38 40 42
+
+🔥 핫 넘버
+3 7 12 18 21 25 30 35 40
+
+❄️ 콜드 넘버
+1 4 6 9 13 17 22 27 33 44`;
+            analyzeData();
         }
         
         function copyResult() {
-            let result = document.getElementById('resultArea').innerText;
-            navigator.clipboard.writeText(result).then(() => {
-                alert('📋 결과가 복사되었습니다!');
+            if (!currentAnalysis) {
+                alert('분석 결과가 없습니다.');
+                return;
+            }
+            
+            let text = `=== 교집합 분석 결과 ===\n`;
+            text += `전체 그룹: ${currentAnalysis.stats.totalGroups}개\n`;
+            text += `분석 숫자: ${currentAnalysis.stats.totalNumbers}개\n\n`;
+            text += `=== 추천 순위 ===\n`;
+            
+            currentAnalysis.analysis.slice(0, 20).forEach((item, idx) => {
+                text += `${idx+1}. ${item.number} (${item.count}개 그룹, 점수 ${item.score.toFixed(2)})\n`;
+            });
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('📋 분석 결과가 복사되었습니다!');
             });
         }
+        
+        function exportData() {
+            if (!currentAnalysis) return;
+            
+            let data = {
+                timestamp: new Date().toISOString(),
+                stats: currentAnalysis.stats,
+                analysis: currentAnalysis.analysis,
+                groups: currentAnalysis.groups,
+                correlation: currentAnalysis.correlation
+            };
+            
+            let blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            let a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `analysis_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+        }
+        
+        function printReport() {
+            window.print();
+        }
+        
+        // 키보드 단축키
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                analyzeData();
+            }
+        });
     </script>
 </body>
 </html>
